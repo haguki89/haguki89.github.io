@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ClosingTimeToggle 利用者向け手順書</title>
+  <style>
+    :root {
+      --bg: #f6f3ee;
+      --card: #fff;
+      --text: #222;
+      --muted: #5c574f;
+      --line: #e4ddd3;
+      --accent: #2f6fed;
+      --ok: #2c7a4b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+    header {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+    }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    .lead { margin: 0; color: var(--muted); }
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 16px;
+    }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+    h3 { margin: 20px 0 8px; font-size: 16px; }
+    ul, ol { padding-left: 1.3em; }
+    li { margin: 4px 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 16px;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #f3efe8; }
+    code {
+      background: #efe8dc;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 0.92em;
+    }
+    .note {
+      background: #eef5ff;
+      border-left: 4px solid var(--accent);
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+    }
+    .warn {
+      background: #fff6e8;
+      border-left: 4px solid #d48b16;
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+    }
+    .ok {
+      background: #eef8f1;
+      border-left: 4px solid var(--ok);
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+    }
+    figure.shot {
+      margin: 20px 0 0;
+    }
+    figure.shot img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #1c1c1c;
+    }
+    figure.shot figcaption {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 24px;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>ClosingTimeToggle 利用者向け手順書</h1>
+      <p class="lead">LuraSwitch 連動の閉店モード用コンポーネントです。オブジェクトが有効になると閉店状態、無効になると元の状態へ戻します。</p>
+    </header>
+
+    <section>
+      <h2>1. できること</h2>
+      <h3>有効時（閉店）</h3>
+      <ul>
+        <li>指定音を再生</li>
+        <li>指定ライトを消す</li>
+        <li>対象のマテリアルを、名前一致で差し替える</li>
+        <li>指定オブジェクト配下のライトマップ / ライトプローブ / リフレクションプローブを切る</li>
+      </ul>
+      <h3>無効時（通常）</h3>
+      <ul>
+        <li>音を止める</li>
+        <li>ライトを元の ON/OFF に戻す</li>
+        <li>マテリアルを元に戻す</li>
+        <li>ライトマップ類を元に戻す</li>
+      </ul>
+      <p class="note">ワールド起動直後（1秒未満）にこのコンポーネントが有効になっても、閉店処理はかけません。LuraSwitch で後から有効にしたときだけ閉店になります。</p>
+    </section>
+
+    <section>
+      <h2>2. 使い方の基本</h2>
+      <ol>
+        <li><code>ClosingTimeToggle</code> をオブジェクトに付ける</li>
+        <li>Inspector で音・ライト・マテリアル・ライトマップ対象を設定する</li>
+        <li>LuraSwitch でそのオブジェクトを切り替える</li>
+      </ol>
+      <p class="ok">LuraSwitch On = 閉店、Off = 通常、です。初期状態は Off（通常営業）にします。</p>
+    </section>
+
+    <section>
+      <h2>3. LuraSwitch の設定</h2>
+      <p>オブジェクト切り替え用の <code>Switch_Object</code> を使います。</p>
+
+      <h3>推奨設定</h3>
+      <table>
+        <thead>
+          <tr><th>項目</th><th>設定</th><th>理由</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Default State / Toggle Default On</td>
+            <td><strong>Off</strong></td>
+            <td>ワールド入場時は通常営業のままにする</td>
+          </tr>
+          <tr>
+            <td>On Targets</td>
+            <td>ClosingTimeToggle を付けたオブジェクト</td>
+            <td>On のときだけ閉店コンポーネントが有効になる</td>
+          </tr>
+          <tr>
+            <td>Off Targets</td>
+            <td>空でよい</td>
+            <td>閉店用オブジェクト以外を消す必要はない</td>
+          </tr>
+          <tr>
+            <td>Sync Mode</td>
+            <td>用途に合わせる</td>
+            <td>店全体で共有するなら Global。個人ごとなら None / Local</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>接続手順</h3>
+      <ol>
+        <li>ClosingTimeToggle 用の空オブジェクトを作る（例: <code>ClosingTime</code>）</li>
+        <li>そこに <code>ClosingTimeToggle</code> を付ける</li>
+        <li>Hierarchy 上で、このオブジェクトを <strong>最初は無効（チェックオフ）</strong> にしておく</li>
+        <li>LuraSwitch の <strong>On Targets</strong> にこのオブジェクトを入れる</li>
+        <li>LuraSwitch の初期状態を <strong>Off</strong> にする</li>
+        <li>スイッチを On にするとオブジェクトが有効になり閉店、Off に戻すと無効になり通常へ戻る</li>
+      </ol>
+
+      <p class="warn">Default State を On のままにすると、入場時点で閉店になります。通常は Off のまま使ってください。</p>
+      <p class="note">LuraSwitch2 では、Default State を切り替えるとエディタ上でも On/Off の見た目が変わります。Off のとき ClosingTime オブジェクトが非表示／無効になっていれば接続は正しいです。</p>
+    </section>
+
+    <section>
+      <h2>4. Inspector の設定</h2>
+
+      <h3>音</h3>
+      <table>
+        <thead>
+          <tr><th>項目</th><th>内容</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Target Audio</td><td>閉店時に鳴らす AudioSource</td></tr>
+        </tbody>
+      </table>
+      <p>空なら音は使いません。</p>
+
+      <h3>消すライト</h3>
+      <table>
+        <thead>
+          <tr><th>項目</th><th>内容</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Target Lights</td><td>閉店時に消したい Light（複数可）</td></tr>
+        </tbody>
+      </table>
+      <p>無効に戻すと、最初に覚えた ON/OFF に復元します。</p>
+
+      <h3>マテリアル差し替え</h3>
+      <p>表の1行が「1つの差し替え」です。</p>
+      <table>
+        <thead>
+          <tr><th>列</th><th>内容</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>対象</td><td>MeshRenderer</td></tr>
+          <tr><td>変更前マテリアル</td><td>探したいマテリアル（名前で照合）</td></tr>
+          <tr><td>変更後マテリアル</td><td>閉店時に入れるマテリアル</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li>対象から、変更前マテリアルと同じ名前のスロットを探す</li>
+        <li>最初に見つかったスロットだけ差し替える</li>
+        <li>実体が同じアセットである必要はない。名前が同じなら変わる</li>
+      </ul>
+      <p class="warn">同じマテリアル名が複数スロットにある場合は、先頭の1つだけ変わります。全部変えたい場合は行を分けてください。</p>
+
+      <h3>ライトマップを切る対象</h3>
+      <table>
+        <thead>
+          <tr><th>項目</th><th>内容</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Lightmap Target Objects</td><td>閉店時にライトマップを切りたい親オブジェクト</td></tr>
+        </tbody>
+      </table>
+      <p>指定オブジェクト自身と、その子の全 Renderer が対象です。無効に戻すと、最初に覚えたライトマップ設定に戻します。</p>
+    </section>
+
+    <section>
+      <h2>5. マテリアル表の操作</h2>
+
+      <h3>まとめて追加</h3>
+      <p>「対象をまとめてドロップ」に、Hierarchy から GameObject / MeshRenderer を複数ドロップします。</p>
+      <ul>
+        <li>MeshRenderer が付いているものだけ追加</li>
+        <li>既に入っている対象は重複追加しない</li>
+        <li>変更前・変更後はあとから設定</li>
+      </ul>
+
+      <h3>行の選択</h3>
+      <ul>
+        <li>行クリック、または左のチェックで選択</li>
+        <li>Ctrl（Mac は Command）+ クリックで複数選択</li>
+        <li>「全選択」「選択解除」も使える</li>
+      </ul>
+
+      <h3>行の追加・削除</h3>
+      <ul>
+        <li><strong>+</strong> … 選択行の下に空行。未選択なら末尾</li>
+        <li><strong>-</strong> … 選択中の行だけ削除</li>
+        <li><strong>件数</strong> … 行数を直接指定</li>
+      </ul>
+
+      <h3>入力補助（一括反映）</h3>
+      <ol>
+        <li>左に変更前マテリアル、右に変更後マテリアルを入れる</li>
+        <li>「選択行に適用」または「全行に適用」を押す</li>
+      </ol>
+      <p>空の欄は上書きしません。変更後だけ一括で入れることもできます。</p>
+
+      <figure class="shot">
+        <img src="ClosingTimeToggle_image.png" alt="ClosingTimeToggle の Inspector。マテリアル差し替え表と入力補助">
+        <figcaption>Inspector のマテリアル差し替え表。ドロップ欄、件数、入力補助、対象 / 変更前 / 変更後、全選択、+/- が並びます。</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>6. 推奨する設定手順</h2>
+      <ol>
+        <li>ClosingTime オブジェクトを作り、ClosingTimeToggle を付ける</li>
+        <li>そのオブジェクトは無効にしておく</li>
+        <li>LuraSwitch の On Targets に入れ、初期状態を Off にする</li>
+        <li>音とライトを入れる</li>
+        <li>ライトマップを切りたい建物・家具の親を Lightmap Target Objects に入れる</li>
+        <li>マテリアルを変えたい Renderer をドロップで追加</li>
+        <li>入力補助で変更前・変更後をまとめて入れる</li>
+        <li>LuraSwitch を On にして閉店、Off で復元されるか確認する</li>
+      </ol>
+      <p class="note">名前が一致しない行は何もしません。対象にそのマテリアル名があるか確認してください。</p>
+    </section>
+
+    <section>
+      <h2>7. 注意</h2>
+      <ul>
+        <li>対象は MeshRenderer です。SkinnedMeshRenderer だけしかないオブジェクトは入りません</li>
+        <li>同じマテリアルを共有している他オブジェクトにも影響することがあります</li>
+        <li>元の状態は、最初に有効になったタイミングで記憶します</li>
+        <li>LuraSwitch の初期状態を On にすると、入場時から閉店になります</li>
+      </ul>
+    </section>
+
+    <footer>
+      ClosingTimeToggle 利用者向け手順書<br>
+      Copyright © 2026/09/22 Haguki. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>
