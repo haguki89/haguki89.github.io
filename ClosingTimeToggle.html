@@ -4,115 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ClosingTimeToggle 利用者向け手順書</title>
-  <style>
-    :root {
-      --bg: #f6f3ee;
-      --card: #fff;
-      --text: #222;
-      --muted: #5c574f;
-      --line: #e4ddd3;
-      --accent: #2f6fed;
-      --ok: #2c7a4b;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.7;
-    }
-    .wrap {
-      max-width: 880px;
-      margin: 0 auto;
-      padding: 40px 20px 80px;
-    }
-    header {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 28px 32px;
-      margin-bottom: 24px;
-    }
-    h1 { margin: 0 0 8px; font-size: 28px; }
-    .lead { margin: 0; color: var(--muted); }
-    section {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 24px 28px;
-      margin-bottom: 16px;
-    }
-    h2 {
-      margin: 0 0 12px;
-      font-size: 20px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--line);
-    }
-    h3 { margin: 20px 0 8px; font-size: 16px; }
-    ul, ol { padding-left: 1.3em; }
-    li { margin: 4px 0; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 8px 0 16px;
-      font-size: 14px;
-    }
-    th, td {
-      border: 1px solid var(--line);
-      padding: 8px 10px;
-      text-align: left;
-      vertical-align: top;
-    }
-    th { background: #f3efe8; }
-    code {
-      background: #efe8dc;
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-size: 0.92em;
-    }
-    .note {
-      background: #eef5ff;
-      border-left: 4px solid var(--accent);
-      padding: 10px 14px;
-      border-radius: 0 8px 8px 0;
-    }
-    .warn {
-      background: #fff6e8;
-      border-left: 4px solid #d48b16;
-      padding: 10px 14px;
-      border-radius: 0 8px 8px 0;
-    }
-    .ok {
-      background: #eef8f1;
-      border-left: 4px solid var(--ok);
-      padding: 10px 14px;
-      border-radius: 0 8px 8px 0;
-    }
-    figure.shot {
-      margin: 20px 0 0;
-    }
-    figure.shot img {
-      display: block;
-      width: 100%;
-      height: auto;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #1c1c1c;
-    }
-    figure.shot figcaption {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    footer {
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      margin-top: 24px;
-      line-height: 1.8;
-    }
-  </style>
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <div class="wrap">
@@ -286,7 +178,7 @@
       <p>空の欄は上書きしません。変更後だけ一括で入れることもできます。</p>
 
       <figure class="shot">
-        <img src="ClosingTimeToggle_image.png" alt="ClosingTimeToggle の Inspector。マテリアル差し替え表と入力補助">
+        <img src="./ClosingTimeToggle_image.png" alt="ClosingTimeToggle の Inspector。マテリアル差し替え表と入力補助">
         <figcaption>Inspector のマテリアル差し替え表。ドロップ欄、件数、入力補助、対象 / 変更前 / 変更後、全選択、+/- が並びます。</figcaption>
       </figure>
     </section>
