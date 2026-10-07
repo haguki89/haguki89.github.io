@@ -1,0 +1,121 @@
+:root {
+  --bg: #061018;
+  --card: #0c1c2e;
+  --accent: #3ec6e0;
+  --glow: #7af0ff;
+  --text: #e8f4f8;
+  --muted: #8aa8b8;
+  --page: 880px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
+  background: radial-gradient(ellipse at top, #0a2035 0%, var(--bg) 55%);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+header {
+  text-align: center;
+  padding: 1.2rem 1.4rem 1rem;
+}
+
+.banner {
+  display: block;
+  width: 100%;
+  max-width: var(--page);
+  height: auto;
+  margin: 0 auto;
+  aspect-ratio: 1920 / 600;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+header p {
+  color: var(--muted);
+  margin-top: .6rem;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+  background: rgba(0, 0, 0, .25);
+  position: sticky;
+  top: 0;
+}
+
+nav a {
+  color: var(--glow);
+  text-decoration: none;
+  font-size: .95rem;
+}
+
+nav a.active {
+  color: #fff;
+  font-weight: bold;
+}
+
+main {
+  max-width: var(--page);
+  margin: 0 auto;
+  padding: 2.2rem 1.4rem 3rem;
+}
+
+h2 {
+  color: var(--accent);
+  border-left: 4px solid var(--accent);
+  padding-left: .7rem;
+  margin-bottom: 1rem;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid rgba(62, 198, 224, .25);
+  border-radius: 12px;
+  padding: 1.4rem;
+  margin: 1rem 0;
+  box-shadow: 0 0 24px rgba(62, 198, 224, .08);
+}
+
+.btn {
+  display: inline-block;
+  background: linear-gradient(90deg, #1a6f8a, #3ec6e0);
+  color: #041018;
+  font-weight: bold;
+  padding: .7rem 1.3rem;
+  border-radius: 999px;
+  text-decoration: none;
+  margin: .4rem .3rem .4rem 0;
+}
+
+.links a,
+.alt a {
+  color: var(--glow);
+}
+
+.form-wrap {
+  width: 100%;
+  margin: 1.2rem auto 0;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.form-wrap iframe {
+  display: block;
+  width: 100%;
+  min-height: 820px;
+  border: 0;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem 1rem 2.5rem;
+  color: var(--muted);
+  font-size: .85rem;
+}
