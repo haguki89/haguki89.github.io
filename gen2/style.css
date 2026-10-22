@@ -82,14 +82,13 @@ a {
 
 /* お知らせ */
 .site-notice {
-  background: var(--danger);
-  color: #fff;
+  background: transparent;
+  color: var(--danger);
   text-align: center;
-  padding: 10px 16px;
-  font-size: 14px;
-  font-weight: 500;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: bold;
   letter-spacing: 0.08em;
-  border-bottom: 1px solid #8f1c22;
   margin-bottom: 28px;
 }
 
@@ -149,15 +148,8 @@ footer {
     font-size: 14px;
   }
 
-.site-notice {
-  background: none;
-  color: #e74c3c;
-  text-align: center;
-  padding: 12px 16px;
-  font-size: 15px;
-  font-weight: bold;
-  letter-spacing: 0.05em;
-  border: none;
-  margin-bottom: 20px;
-}
+  .site-notice {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
 }
