@@ -58,7 +58,7 @@
   </div>
 
   <script>
-    fetch('../info.html')
+    fetch('./info.html')
       .then(res => {
         if (!res.ok) throw new Error('読み込み失敗');
         return res.text();
