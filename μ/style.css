@@ -80,7 +80,20 @@ a {
   padding: 32px 20px 80px;
 }
 
-/* Hero Banner（両ページ共通） */
+/* お知らせ */
+.site-notice {
+  background: var(--danger);
+  color: #fff;
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid #8f1c22;
+  margin-bottom: 28px;
+}
+
+/* Hero Banner */
 .hero {
   text-align: center;
   padding: 0 0 28px;
@@ -134,5 +147,10 @@ footer {
 
   .nav-logo {
     font-size: 14px;
+  }
+
+  .site-notice {
+    font-size: 13px;
+    padding: 8px 12px;
   }
 }

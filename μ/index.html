@@ -68,5 +68,23 @@
       μ隔離観察施設
     </footer>
   </div>
+
+  <script>
+    fetch('./info.html')
+      .then(res => {
+        if (!res.ok) throw new Error('読み込み失敗');
+        return res.text();
+      })
+      .then(html => {
+        const temp = document.createElement('div');
+        temp.innerHTML = html.trim();
+        const notice = temp.firstElementChild;
+        const wrap = document.querySelector('.wrap');
+        if (wrap && notice) {
+          wrap.insertBefore(notice, wrap.firstChild);
+        }
+      })
+      .catch(err => console.error('お知らせ読み込みエラー:', err));
+  </script>
 </body>
 </html>
