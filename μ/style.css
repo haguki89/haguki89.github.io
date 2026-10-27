@@ -110,6 +110,14 @@ a {
   background: transparent;
 }
 
+.report-label {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  margin-bottom: 40px;
+}
+
 .hero-meta {
   margin-top: 18px;
 }
