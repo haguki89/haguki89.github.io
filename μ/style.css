@@ -74,6 +74,39 @@ a {
   color: var(--accent);
 }
 
+/* ===== ハンバーガーボタン ===== */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  z-index: 101;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--accent);
+  margin: 5px auto;
+  transition: all 0.3s ease;
+}
+
+/* メニュー開いたときの×マーク */
+.nav.open .nav-toggle span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav.open .nav-toggle span:nth-child(2) {
+  opacity: 0;
+}
+.nav.open .nav-toggle span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
 .wrap {
   max-width: 920px;
   margin: 0 auto;
@@ -134,6 +167,7 @@ footer {
   font-size: 12px;
 }
 
+/* ===== スマホ向け ===== */
 @media (max-width: 640px) {
   .wrap {
     padding: 16px 12px 64px;
@@ -143,17 +177,58 @@ footer {
     padding: 0 12px;
   }
 
+  .nav-logo {
+    font-size: 14px;
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+
   .nav-links {
-    gap: 16px;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    background: rgba(5, 5, 6, 0.97);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 12px 0 20px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.35s ease, opacity 0.3s ease;
+  }
+
+  .nav.open .nav-links {
+    max-height: 400px;
+    opacity: 1;
+  }
+
+  .nav-links li {
+    width: 100%;
+    text-align: center;
   }
 
   .nav-links a {
-    font-size: 11px;
-    letter-spacing: 0.1em;
+    display: block;
+    padding: 14px 20px;
+    font-size: 14px;
+    letter-spacing: 0.12em;
   }
 
-  .nav-logo {
-    font-size: 14px;
+  .nav-links a:hover,
+  .nav-links a.current {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  /* モバイルでは BRIEFING と VOICE を非表示 */
+  .nav-links li:nth-child(2),
+  .nav-links li:nth-child(4) {
+    display: none;
   }
 
   .site-notice {

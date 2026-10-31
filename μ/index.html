@@ -19,9 +19,15 @@
   <link rel="stylesheet" href="./index.css">
 </head>
 <body>
+
   <nav class="nav">
     <div class="nav-inner">
       <a href="#top" class="nav-logo">μ隔離観察施設</a>
+      <button class="nav-toggle" aria-label="メニューを開く">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <ul class="nav-links">
         <li><a href="#top">HOME</a></li>
         <li><a href="#briefing">BRIEFING</a></li>
@@ -31,6 +37,8 @@
       </ul>
     </div>
   </nav>
+
+
 
   <div class="wrap" id="top">
     <header class="hero">
@@ -95,5 +103,26 @@
       })
       .catch(err => console.error('お知らせ読み込みエラー:', err));
   </script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.querySelector('.nav-toggle');
+      const nav = document.querySelector('.nav');
+
+      if (toggle && nav) {
+        toggle.addEventListener('click', () => {
+          nav.classList.toggle('open');
+        });
+
+        // メニュー内のリンクを押したら閉じる
+        document.querySelectorAll('.nav-links a').forEach(link => {
+          link.addEventListener('click', () => {
+            nav.classList.remove('open');
+          });
+        });
+      }
+    });
+  </script>
+  
 </body>
 </html>
