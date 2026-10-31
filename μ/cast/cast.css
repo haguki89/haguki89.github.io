@@ -1,0 +1,193 @@
+h1 {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.report-label {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  margin-bottom: 40px;
+}
+
+.group {
+  margin-top: 40px;
+  padding: 28px 24px;
+  background: linear-gradient(180deg, #101217, var(--panel));
+  border: 1px solid var(--line);
+}
+
+.group-title {
+  font-size: 1.15rem;
+  font-weight: bold;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+  margin-bottom: 24px;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+}
+
+.cast-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.card {
+  background: #07080a;
+  border: 1px solid var(--line);
+  text-align: center;
+  overflow: hidden;
+}
+
+.photo {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  background: #07080a;
+  border-bottom: 1px solid var(--line);
+  display: block;
+}
+
+.info {
+  padding: 14px 12px 18px;
+}
+
+.name {
+  font-size: 1.15rem;
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 万一はみ出しても「…」にする */
+}
+
+.meta {
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  color: var(--muted);
+}
+
+.x-link {
+  display: inline-block;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+.x-link:hover {
+  color: #fff;
+}
+
+/* キジマ ショウタ用 */
+.kijima-card {
+  position: relative;
+}
+
+.kijima-card .speech-bubble {
+  display: none;
+  position: absolute;
+  left: 100%;
+  top: 10px;
+  margin-left: 12px;
+  width: 180px;
+  height: auto;
+  z-index: 10;
+  pointer-events: none;
+  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+}
+
+.kijima-card.show-bubble .speech-bubble {
+  display: block;
+}
+
+/* ===== スマホ向け（3列固定のまま調整） ===== */
+@media (max-width: 640px) {
+  .group {
+    padding: 16px 6px;
+  }
+
+  .cast-grid {
+    gap: 6px;
+  }
+
+  .info {
+    padding: 8px 2px 12px;
+  }
+
+  .name {
+    font-size: 0.68rem;   /* さらに小さくして見切れ防止 */
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .meta {
+    font-size: 0.62rem;
+    margin-bottom: 4px;
+  }
+
+  .x-link {
+    font-size: 0.62rem;
+  }
+
+  .group-title {
+    font-size: 1rem;
+  }
+
+  /* 吹き出しを下に */
+  .kijima-card .speech-bubble {
+    position: static;
+    display: none;
+    width: 100%;
+    max-width: 180px;
+    margin: 8px auto 0;
+    left: auto;
+    top: auto;
+  }
+
+  .kijima-card.show-bubble .speech-bubble {
+    display: block;
+  }
+}
+
+/* ===== さらに小さい画面 ===== */
+@media (max-width: 380px) {
+  .group {
+    padding: 12px 4px;
+  }
+
+  .cast-grid {
+    gap: 4px;
+  }
+
+  .name {
+    font-size: 0.62rem;   /* モチヅキ オウタロウ対応 */
+  }
+
+  .meta {
+    font-size: 0.58rem;
+  }
+
+  .x-link {
+    font-size: 0.58rem;
+  }
+}
+
+.notice {
+  margin-top: 48px;
+  margin-bottom: 16px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.notice p {
+  margin: 4px 0;
+}
