@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-8Y15LQMB6H"></script>
@@ -7,7 +8,7 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
+    
     gtag('config', 'G-8Y15LQMB6H');
   </script>
   <meta charset="UTF-8">
@@ -18,8 +19,8 @@
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./index.css">
 </head>
-<body>
 
+<body>
   <nav class="nav">
     <div class="nav-inner">
       <a href="#top" class="nav-logo">μ隔離観察施設</a>
@@ -37,9 +38,6 @@
       </ul>
     </div>
   </nav>
-
-
-
   <div class="wrap" id="top">
     <header class="hero">
       <img class="hero-banner" src="./png/banner.png" alt="μ隔離観察施設">
@@ -47,45 +45,34 @@
         <p class="sub">VRCイベント　／　RP×世界観×謎解き </p>
       </div>
     </header>
-
     <p class="eye">異常なのはーーー本当に彼らですか？</p>
     <p class="eye">貴方は国外からμ隔離観察施設に「心理士」として招かれます。<br>欠落者が収監された施設内を【対話や探索】を行い欠落者達が引き起こした事件を深堀し、<br>この国に貢献してください。</p>
-
     <section id="briefing">
       <div class="sec-id">REPORT-μ-001　／　PUBLIC BRIEFING</div>
       <div class="video-frame">
         <video controls playsinline preload="metadata">
-          <source src="./video/DOC-μ-001.mp4" type="video/mp4">
-          お使いのブラウザは動画再生に対応していません。
+          <source src="./video/DOC-μ-001.mp4" type="video/mp4"> お使いのブラウザは動画再生に対応していません。
         </video>
       </div>
     </section>
-
     <section id="cast">
       <div class="sec-id">REPORT-μ-002　／　CAST</div>
       <div class="video-frame">
         <video controls playsinline preload="metadata">
-          <source src="./video/DOC-μ-002.mp4" type="video/mp4">
-          お使いのブラウザは動画再生に対応していません。
+          <source src="./video/DOC-μ-002.mp4" type="video/mp4"> お使いのブラウザは動画再生に対応していません。
         </video>
       </div>
     </section>
-
     <section id="voice">
       <div class="sec-id">REPORT-μ-003　／　voice</div>
       <div class="video-frame">
         <video controls playsinline preload="metadata">
-          <source src="./video/DOC-μ-003.mp4" type="video/mp4">
-          お使いのブラウザは動画再生に対応していません。
+          <source src="./video/DOC-μ-003.mp4" type="video/mp4"> お使いのブラウザは動画再生に対応していません。
         </video>
       </div>
     </section>
-
-    <footer>
-      μ隔離観察施設
-    </footer>
+    <footer> μ隔離観察施設&copy; </footer>
   </div>
-
   <script>
     fetch('./info.html')
       .then(res => {
@@ -103,17 +90,16 @@
       })
       .catch(err => console.error('お知らせ読み込みエラー:', err));
   </script>
-  
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const toggle = document.querySelector('.nav-toggle');
       const nav = document.querySelector('.nav');
-
+    
       if (toggle && nav) {
         toggle.addEventListener('click', () => {
           nav.classList.toggle('open');
         });
-
+    
         // メニュー内のリンクを押したら閉じる
         document.querySelectorAll('.nav-links a').forEach(link => {
           link.addEventListener('click', () => {
@@ -123,6 +109,6 @@
       }
     });
   </script>
-  
 </body>
+
 </html>

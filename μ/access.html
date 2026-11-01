@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-8Y15LQMB6H"></script>
@@ -7,7 +8,7 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
+    
     gtag('config', 'G-8Y15LQMB6H');
   </script>
   <meta charset="UTF-8">
@@ -18,6 +19,7 @@
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./index.css">
 </head>
+
 <body>
   <nav class="nav">
     <div class="nav-inner">
@@ -43,35 +45,24 @@
         <p class="sub">VRCイベント　／　RP×世界観×謎解き </p>
       </div>
     </header>
-
-    <div class="report-label">REPORT-μ-004  ／  ACCESS</div>
-
+    <div class="report-label">REPORT-μ-004 ／ ACCESS</div>
     <section>
       <div class="sec-id">開催スケジュール</div>
       <p>第2・第4土曜日　22:00～</p>
     </section>
-
     <section>
       <div class="sec-id">参加について（心理士）</div>
       <p>心理士としての参加は事前抽選制です。</p>
       <p>応募は公式X（@vrc_mu__）の案内に従ってください</p>
       <p>当選者にはXのDMにてご連絡します</p>
     </section>
-
     <section>
       <div class="sec-id">公式情報</div>
-      <p>
-        公式X：<a href="https://x.com/vrc_mu__" target="_blank" rel="noopener">@vrc_mu__</a><br>
-        ハッシュタグ：#VRC_μ
-      </p>
+      <p> 公式X：<a href="https://x.com/vrc_mu__" target="_blank" rel="noopener">@vrc_mu__</a><br> ハッシュタグ：#VRC_μ </p>
       <p>最新の開催情報・募集は公式Xをご確認ください。</p>
     </section>
-
-    <footer>
-      μ隔離観察施設
-    </footer>
+    <footer> μ隔離観察施設&copy; </footer>
   </div>
-
   <script>
     fetch('./info.html')
       .then(res => {
@@ -89,17 +80,16 @@
       })
       .catch(err => console.error('お知らせ読み込みエラー:', err));
   </script>
-  
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const toggle = document.querySelector('.nav-toggle');
       const nav = document.querySelector('.nav');
-
+    
       if (toggle && nav) {
         toggle.addEventListener('click', () => {
           nav.classList.toggle('open');
         });
-
+    
         // メニュー内のリンクを押したら閉じる
         document.querySelectorAll('.nav-links a').forEach(link => {
           link.addEventListener('click', () => {
@@ -109,6 +99,6 @@
       }
     });
   </script>
-  
 </body>
+
 </html>
