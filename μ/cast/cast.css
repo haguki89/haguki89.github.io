@@ -30,7 +30,10 @@ h1 {
   color: var(--accent);
   letter-spacing: 0.08em;
 }
-
+  .group-title .en {
+  font-size: 0.82em;
+  letter-spacing: 0.04em
+}
 .cast-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -64,7 +67,7 @@ h1 {
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* 万一はみ出しても「…」にする */
+  text-overflow: ellipsis;
 }
 
 .meta {
@@ -85,28 +88,6 @@ h1 {
   color: #fff;
 }
 
-/* キジマ ショウタ用 */
-.kijima-card {
-  position: relative;
-}
-
-.kijima-card .speech-bubble {
-  display: none;
-  position: absolute;
-  left: 100%;
-  top: 10px;
-  margin-left: 12px;
-  width: 180px;
-  height: auto;
-  z-index: 10;
-  pointer-events: none;
-  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
-}
-
-.kijima-card.show-bubble .speech-bubble {
-  display: block;
-}
-
 /* ===== スマホ向け（3列固定のまま調整） ===== */
 @media (max-width: 640px) {
   .group {
@@ -122,7 +103,7 @@ h1 {
   }
 
   .name {
-    font-size: 0.68rem;   /* さらに小さくして見切れ防止 */
+    font-size: 0.68rem;
     line-height: 1.2;
     letter-spacing: -0.02em;
   }
@@ -139,21 +120,12 @@ h1 {
   .group-title {
     font-size: 1rem;
   }
+  .group-title .en {
+  font-size: 0.82em;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
 
-  /* 吹き出しを下に */
-  .kijima-card .speech-bubble {
-    position: static;
-    display: none;
-    width: 100%;
-    max-width: 180px;
-    margin: 8px auto 0;
-    left: auto;
-    top: auto;
-  }
-
-  .kijima-card.show-bubble .speech-bubble {
-    display: block;
-  }
 }
 
 /* ===== さらに小さい画面 ===== */
