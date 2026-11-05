@@ -386,6 +386,48 @@
       }
     });
   </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // キジマ ショウタのカードを特定
+  const cards = document.querySelectorAll('.card');
+  let shotaCard = null;
+  cards.forEach(card => {
+    const nameEl = card.querySelector('.name');
+    if (nameEl && nameEl.textContent.includes('キジマ') && nameEl.textContent.includes('ショウタ')) {
+      shotaCard = card;
+    }
+  });
+
+  if (!shotaCard) return;
+
+  const photo = shotaCard.querySelector('.photo');
+  let doubleClicked = false;
+
+  // 写真をダブルクリックしたらフラグを立てる
+  photo.addEventListener('dblclick', (e) => {
+    e.preventDefault();
+    doubleClicked = true;
+  });
+
+  // HOMEリンクだけを捕捉（hrefが ../index.html で終わるもの、またはテキストがHOMEのもの）
+  const homeLinks = document.querySelectorAll('.nav-links a');
+  homeLinks.forEach(link => {
+    const isHome = link.getAttribute('href') === '../index.html' || 
+                   link.textContent.trim() === 'HOME';
+
+    if (isHome) {
+      link.addEventListener('click', (e) => {
+        if (doubleClicked) {
+          e.preventDefault();
+          window.open('shotahome.html', '_blank');
+          doubleClicked = false;
+        }
+      });
+    }
+  });
+});
+</script>
 </body>
 
 </html>

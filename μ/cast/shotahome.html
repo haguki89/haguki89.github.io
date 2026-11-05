@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="../png/favicon.png" type="image/png">
+  <title>ショウタの日記</title>
+  <style>
+    :root {
+      --bg: #f4f8f4;
+      --card: #ffffff;
+      --green: #6b9e78;
+      --green-soft: #a8c5b0;
+      --green-dark: #4a7c59;
+      --text: #3a4a3e;
+      --muted: #7a8a7e;
+      --border: #d4e4d8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Yu Gothic", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      line-height: 1.8;
+    }
+
+    .banner {
+      width: 100%;
+      max-height: 220px;
+      object-fit: cover;
+      display: block;
+      background: var(--green-soft);
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    .diary-entry {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(107, 158, 120, 0.08);
+    }
+
+    .date {
+      color: var(--green);
+      font-weight: bold;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+      letter-spacing: 0.05em;
+    }
+
+    .diary-entry p {
+      margin-bottom: 8px;
+    }
+
+    .diary-entry p:last-child {
+      margin-bottom: 0;
+    }
+
+    .notice {
+      margin-top: 48px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .notice p {
+      margin: 4px 0;
+    }
+
+    footer {
+      margin-top: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <img class="banner" src="../png/shotahome.png" alt="バナー">
+
+  <div class="container">
+
+    <div class="diary-entry">
+      <div class="date">20xx/10/24</div>
+      <p>今日は国外心理士の人たちが来る日だった。</p>
+      <p>ヒカルが桜もちくれた</p>
+    </div>
+
+    <div class="diary-entry">
+      <div class="date">20xx/08/13</div>
+      <p>ペンのインクがまた切れた！</p>
+      <p>あぁ、ロッカーに替えのペン入れとけばいいんだ</p>
+    </div>
+
+    <div class="diary-entry">
+      <div class="date">20xx/06/11</div>
+      <p>ホワイトボードのインクが取れなくなってきた。</p>
+      <p>新しいボードに張り替えなくちゃ</p>
+    </div>
+
+    <div class="diary-entry">
+      <div class="date">20xx/04/17</div>
+      <p>施設のホームページを作ることになった。</p>
+      <p>こっそり秘密のページ作っちゃおっと</p>
+    </div>
+
+    <div class="notice">
+      <p>*本イベント内の設定情報です。実在の人物を指すものではありません。</p>
+    </div>
+
+    <footer>μ隔離観察施設 &copy;</footer>
+  </div>
+</body>
+</html>
