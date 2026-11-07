@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ぽこぽこファーム 時間効率計算</title>
+<style>
+  :root { --bg:#f4f8f4; --card:#fff; --primary:#2e7d32; --text:#333; }
+  body { font-family: system-ui, "Hiragino Sans", sans-serif; background:var(--bg); color:var(--text); margin:0; padding:16px; display:flex; flex-direction:column; min-height:100vh; }
+  .container { max-width:1300px; margin:0 auto; flex:1; }
+  h1 { text-align:center; color:var(--primary); margin-bottom:4px; }
+  .user-level-box, .section { background:var(--card); padding:16px; border-radius:12px; margin-bottom:20px; box-shadow:0 2px 6px rgba(0,0,0,.08); }
+  .section h2 { margin-top:0; color:var(--primary); border-bottom:2px solid #e8f5e9; padding-bottom:8px; }
+  .crop-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-top:12px; }
+  .crop-item { border:1px solid #ddd; border-radius:8px; padding:10px; background:#fafafa; }
+  .crop-item.locked { opacity:0.65; }
+  select { padding:4px; }
+  .global-select { width:90px; font-size:1.05em; }
+  input[type="number"] { padding:4px; font-size:1.05em; width:90px; }
+  table { width:100%; border-collapse:collapse; background:var(--card); border-radius:12px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,.08); font-size:0.92em; }
+  th, td { padding:8px 10px; text-align:left; border-bottom:1px solid #eee; white-space:nowrap; }
+  th { background:#e8f5e9; }
+  .rank1 { background:#fff8e1; font-weight:bold; }
+  .rank2 { background:#f1f8e9; }
+  .high { color:#d32f2f; font-weight:bold; }
+  button { background:var(--primary); color:#fff; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; margin:4px; }
+  button:hover { background:#1b5e20; }
+  .note { font-size:.85em; color:#666; }
+  .csv-controls { margin-top:8px; }
+  .global-inputs { display:flex; gap:24px; flex-wrap:wrap; align-items:center; }
+  .ranking-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:8px; }
+  .ranking-controls { display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+  footer { margin-top:40px; padding:20px 16px; background:#e8f5e9; text-align:center; font-size:0.9em; color:#555; border-top:1px solid #c8e6c9; }
+  footer a { color:var(--primary); text-decoration:none; }
+  footer a:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🌱 ぽこぽこファーム 時間効率計算</h1>
+  <p style="text-align:center;color:#666;">ユーザーレベル・じょうろレベル・種レベルを選択／入力して時間効率を一覧化</p>
+
+  <div class="user-level-box">
+    <div class="global-inputs">
+      <label><strong>ユーザーレベル</strong>　
+        <input type="number" id="userLevel" min="1" max="75" value="1" onchange="onUserLevelChange()">
+      </label>
+      <label><strong>じょうろレベル</strong>　
+        <select id="wateringCanLevel" class="global-select" onchange="calculate()"></select>
+      </label>
+    </div>
+    <button onclick="calculate()">効率を計算</button>
+    <button onclick="resetAll()" style="background:#666;">全リセット</button>
+    <div class="csv-controls">
+      <button onclick="exportCSV()">CSVエクスポート</button>
+      <label style="margin-left:8px;">
+        <input type="file" id="csvImport" accept=".csv" style="display:none;" onchange="importCSV(event)">
+        <button onclick="document.getElementById('csvImport').click()">CSVインポート</button>
+      </label>
+    </div>
+    <p class="note">※1 当サイトはサーバー側にデータを保存しません。CSVエクスポート/インポートをご利用ください。
+    <br>※2 じょうろレベル7の効果不明のため、暫定でレベル6と同じにしています。(当サイト開発者がレベル6に到達してないです。情報提供も求む)</p>
+  </div>
+
+  <div class="section">
+    <h2>畑</h2>
+    <div class="crop-grid" id="fieldInputs"></div>
+  </div>
+
+  <div class="section">
+    <h2>果樹園</h2>
+    <div class="crop-grid" id="orchardInputs"></div>
+  </div>
+
+  <div class="ranking-header">
+    <h2 style="margin:0;">効率ランキング（開放済みのみ）</h2>
+    <div class="ranking-controls">
+      <label><strong>放置時間</strong>　
+        <select id="idleTime" onchange="calculate()">
+          <option value="0">0分（フル稼働）</option>
+          <option value="15">15分</option>
+          <option value="20">20分</option>
+          <option value="60">1時間</option>
+          <option value="180">3時間</option>
+          <option value="480">8時間</option>
+          <option value="720">12時間</option>
+          <option value="1440">24時間</option>
+        </select>
+      </label>
+      <label><strong>収穫数</strong>　
+        <select id="yieldMode" onchange="calculate()">
+          <option value="min">最小値</option>
+          <option value="avg" selected>平均値</option>
+          <option value="max">最大値</option>
+        </select>
+      </label>
+    </div>
+  </div>
+  <table id="resultTable">
+    <thead>
+      <tr>
+        <th>順位</th>
+        <th>作物</th>
+        <th>エリア</th>
+        <th>種Lv</th>
+        <th>成長時間(分)</th>
+        <th>収穫数</th>
+        <th>予想売値</th>
+        <th>コイン/分</th>
+        <th>コイン/時</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <p class="note">※1 放置時間を設定すると、成長時間がそれより短い作物は「放置時間に1回収穫」として計算します。<br>※2 収穫数は最小・平均・最大から選択できます（デフォルトは平均値）。</p>
+</div>
+
+<footer>
+  <p>当サイトはファンメイドです。公式とは一切関係ありません。</p>
+  <p><a href="contact.html">お問い合わせ</a></p>
+  <p>© 2026 ぽこぽこファーム 時間効率計算ツール</p>
+</footer>
+
+<script>
+const CROPS = [
+  { name: "にんじん", unlockLv: 1, baseTime: 3, basePrice: 2, minYield: 1, maxYield: 2, type: "畑" },
+  { name: "トマト", unlockLv: 1, baseTime: 15, basePrice: 4, minYield: 3, maxYield: 5, type: "畑" },
+  { name: "とうもろこし", unlockLv: 1, baseTime: 45, basePrice: 14, minYield: 3, maxYield: 4, type: "畑" },
+  { name: "かぼちゃ", unlockLv: 1, baseTime: 120, basePrice: 150, minYield: 1, maxYield: 1, type: "畑" },
+  { name: "小麦", unlockLv: 2, baseTime: 30, basePrice: 6, minYield: 4, maxYield: 6, type: "畑" },
+  { name: "キャベツ", unlockLv: 4, baseTime: 40, basePrice: 40, minYield: 2, maxYield: 2, type: "畑" },
+  { name: "すいか", unlockLv: 6, baseTime: 240, basePrice: 320, minYield: 1, maxYield: 1, type: "畑" },
+  { name: "いちご", unlockLv: 25, baseTime: 180, basePrice: 70, minYield: 4, maxYield: 5, type: "畑" },
+  { name: "じゃがいも", unlockLv: 35, baseTime: 120, basePrice: 45, minYield: 4, maxYield: 6, type: "畑" },
+  { name: "さつまいも", unlockLv: 35, baseTime: 240, basePrice: 130, minYield: 3, maxYield: 4, type: "畑" },
+  { name: "お米", unlockLv: 20, baseTime: 70, basePrice: 100, minYield: 1, maxYield: 2, type: "畑" },
+  { name: "メロン", unlockLv: 50, baseTime: 300, basePrice: 800, minYield: 1, maxYield: 1, type: "畑" },
+  { name: "レタス", unlockLv: 15, baseTime: 90, basePrice: 55, minYield: 2, maxYield: 3, type: "畑" },
+  { name: "りんご", unlockLv: 8, baseTime: 360, basePrice: 40, minYield: 3, maxYield: 4, type: "果樹園" },
+  { name: "もも", unlockLv: 10, baseTime: 240, basePrice: 90, minYield: 2, maxYield: 3, type: "果樹園" },
+  { name: "みかん", unlockLv: 30, baseTime: 300, basePrice: 70, minYield: 4, maxYield: 5, type: "果樹園" },
+  { name: "スターフルーツ", unlockLv: 50, baseTime: 300, basePrice: 150, minYield: 4, maxYield: 5, type: "果樹園" },
+  { name: "パイナップル", unlockLv: 55, baseTime: 360, basePrice: 400, minYield: 2, maxYield: 3, type: "果樹園" },
+  { name: "レモン", unlockLv: 60, baseTime: 330, basePrice: 450, minYield: 2, maxYield: 3, type: "果樹園" },
+  { name: "ぶどう", unlockLv: 40, baseTime: 300, basePrice: 120, minYield: 4, maxYield: 5, type: "果樹園" },
+  { name: "マスカット", unlockLv: 65, baseTime: 360, basePrice: 560, minYield: 2, maxYield: 3, type: "果樹園" },
+  { name: "さくらんぼ", unlockLv: 20, baseTime: 270, basePrice: 30, minYield: 8, maxYield: 10, type: "果樹園" }
+];
+
+const STORAGE = "pokopoko_efficiency_v17";
+
+const WATERING = [
+  null,
+  { duration: 15, extra: 1/4 },
+  { duration: 15, extra: 1/3 },
+  { duration: 15, extra: 1/2 },
+  { duration: 15, extra: 2/3 },
+  { duration: 15, extra: 1 },
+  { duration: 20, extra: 1 },
+  { duration: 20, extra: 1 }
+];
+
+function initGlobalSelects() {
+  const waterSelect = document.getElementById("wateringCanLevel");
+  waterSelect.innerHTML = "";
+  for (let i = 1; i <= 7; i++) {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = i;
+    waterSelect.appendChild(opt);
+  }
+}
+
+function getLevelMultiplier(lv) {
+  const m = [1, 1.05, 1.12, 1.2, 1.3, 1.45, 1.6, 1.8];
+  return m[Math.min(Math.max(lv,1), 7)] || 1;
+}
+function getTimeMultiplier(lv) {
+  const m = [1, 0.98, 0.95, 0.92, 0.88, 0.82, 0.75, 0.7];
+  return m[Math.min(Math.max(lv,1), 7)] || 1;
+}
+
+function getEffectiveTime(baseTimeMin, wateringLv) {
+  if (!wateringLv || wateringLv < 1) return baseTimeMin;
+  const w = WATERING[Math.min(wateringLv, 7)];
+  if (!w) return baseTimeMin;
+  const speed = 1 + w.extra;
+  const D = w.duration;
+  if (baseTimeMin <= D) {
+    return baseTimeMin / speed;
+  }
+  return D / speed + (baseTimeMin - D);
+}
+
+function getUserLevel() {
+  let lv = Number(document.getElementById("userLevel").value) || 1;
+  if (lv < 1) lv = 1;
+  if (lv > 75) lv = 75;
+  return lv;
+}
+function getWateringCanLevel() {
+  let lv = Number(document.getElementById("wateringCanLevel").value) || 1;
+  if (lv < 1) lv = 1;
+  if (lv > 7) lv = 7;
+  return lv;
+}
+function getIdleTime() {
+  return Number(document.getElementById("idleTime").value) || 0;
+}
+function getYieldMode() {
+  return document.getElementById("yieldMode").value || "avg";
+}
+
+function isUnlocked(crop) {
+  return getUserLevel() >= crop.unlockLv;
+}
+
+function formatYield(min, max) {
+  if (min === max) return String(min);
+  return `${min}～${max}`;
+}
+
+function getSelectedYield(crop, mode) {
+  if (mode === "min") return crop.minYield;
+  if (mode === "max") return crop.maxYield;
+  return (crop.minYield + crop.maxYield) / 2;
+}
+
+function loadSettings() {
+  const saved = JSON.parse(localStorage.getItem(STORAGE) || "{}");
+  const userLv = Math.min(75, Math.max(1, saved.userLevel || 1));
+  const waterLv = Math.min(7, Math.max(1, saved.wateringCanLevel || 1));
+  const idle = saved.idleTime || 0;
+  const yieldMode = saved.yieldMode || "avg";
+
+  document.getElementById("userLevel").value = userLv;
+  document.getElementById("wateringCanLevel").value = waterLv;
+  document.getElementById("idleTime").value = idle;
+  document.getElementById("yieldMode").value = yieldMode;
+
+  renderInputs("fieldInputs", "畑", saved);
+  renderInputs("orchardInputs", "果樹園", saved);
+}
+
+function renderInputs(containerId, type, saved) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+  CROPS.forEach((c, i) => {
+    if (c.type !== type) return;
+    const s = saved[c.name] || {};
+    const lv = s.lv || 1;
+    const unlocked = isUnlocked(c);
+    const lockedClass = unlocked ? "" : "locked";
+    const yieldStr = formatYield(c.minYield, c.maxYield);
+
+    let options = "";
+    for (let n = 1; n <= 7; n++) {
+      options += `<option value="${n}" ${n === lv ? "selected" : ""}>${n}</option>`;
+    }
+
+    container.innerHTML += `
+      <div class="crop-item ${lockedClass}">
+        <label>${c.name} <small>(収穫数：${yieldStr}、開放:Lv${c.unlockLv})</small></label><br>
+        種Lv: <select id="lv_${i}" onchange="saveSettings()">${options}</select>
+        <div style="margin-top:4px;font-size:.85em;color:${unlocked ? "#2e7d32" : "#999"};">
+          ${unlocked ? "開放済み" : "未開放"}
+        </div>
+      </div>`;
+  });
+}
+
+function onUserLevelChange() {
+  const input = document.getElementById("userLevel");
+  let lv = Number(input.value) || 1;
+  if (lv < 1) lv = 1;
+  if (lv > 75) lv = 75;
+  input.value = lv;
+
+  saveSettings();
+  loadSettings();
+  calculate();
+}
+
+function saveSettings() {
+  const data = {
+    userLevel: getUserLevel(),
+    wateringCanLevel: getWateringCanLevel(),
+    idleTime: getIdleTime(),
+    yieldMode: getYieldMode()
+  };
+  CROPS.forEach((c, i) => {
+    const lvEl = document.getElementById("lv_" + i);
+    if (!lvEl) return;
+    data[c.name] = {
+      lv: Number(lvEl.value) || 1
+    };
+  });
+  localStorage.setItem(STORAGE, JSON.stringify(data));
+}
+
+function calculate() {
+  const wateringLv = getWateringCanLevel();
+  const idleTime = getIdleTime();
+  const yieldMode = getYieldMode();
+  const results = [];
+
+  CROPS.forEach((c, i) => {
+    if (!isUnlocked(c)) return;
+
+    const lvEl = document.getElementById("lv_" + i);
+    if (!lvEl) return;
+
+    const lv = Number(lvEl.value) || 1;
+    const seedTimeMult = getTimeMultiplier(lv);
+    const adjustedBase = c.baseTime * seedTimeMult;
+    const growthTime = Math.max(1, getEffectiveTime(adjustedBase, wateringLv));
+    const cycleTime = idleTime > 0 ? Math.max(growthTime, idleTime) : growthTime;
+    const mult = getLevelMultiplier(lv);
+
+    const yieldValue = getSelectedYield(c, yieldMode);
+    const price = Math.round(c.basePrice * mult * yieldValue);
+    const perMin = price / cycleTime;
+    const perHour = perMin * 60;
+
+    results.push({
+      name: c.name,
+      type: c.type,
+      lv,
+      growthTime: growthTime.toFixed(1),
+      yieldValue: yieldValue % 1 === 0 ? yieldValue : yieldValue.toFixed(1),
+      price,
+      perMin: perMin.toFixed(2),
+      perHour: Math.round(perHour)
+    });
+  });
+
+  results.sort((a, b) => b.perHour - a.perHour);
+
+  const tbody = document.querySelector("#resultTable tbody");
+  tbody.innerHTML = "";
+  results.forEach((r, idx) => {
+    const cls = idx === 0 ? "rank1" : idx === 1 ? "rank2" : "";
+    tbody.innerHTML += `
+      <tr class="${cls}">
+        <td>${idx + 1}</td>
+        <td>${r.name}</td>
+        <td>${r.type}</td>
+        <td>${r.lv}</td>
+        <td>${r.growthTime}</td>
+        <td>${r.yieldValue}</td>
+        <td>${r.price.toLocaleString()}</td>
+        <td class="${r.perMin > 5 ? "high" : ""}">${r.perMin}</td>
+        <td class="${r.perHour > 300 ? "high" : ""}">${r.perHour.toLocaleString()}</td>
+      </tr>`;
+  });
+
+  if (results.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9">開放済みの作物がありません</td></tr>';
+  }
+  saveSettings();
+}
+
+function exportCSV() {
+  const userLv = getUserLevel();
+  const wateringLv = getWateringCanLevel();
+  let csv = "userLevel," + userLv + "\n";
+  csv += "wateringCanLevel," + wateringLv + "\n";
+  csv += "name,seedLevel\n";
+  CROPS.forEach((c, i) => {
+    const lv = Number(document.getElementById("lv_" + i)?.value) || 1;
+    csv += `${c.name},${lv}\n`;
+  });
+
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "pokopoko_efficiency.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result.replace(/^\uFEFF/, "");
+    const lines = text.split(/\r?\n/).filter(l => l.trim());
+    const data = { userLevel: 1, wateringCanLevel: 1, idleTime: 0, yieldMode: "avg" };
+    let headerPassed = false;
+
+    lines.forEach(line => {
+      const parts = line.split(",").map(s => s.trim());
+      if (parts[0] === "userLevel") {
+        data.userLevel = Math.min(75, Math.max(1, Number(parts[1]) || 1));
+      } else if (parts[0] === "wateringCanLevel") {
+        data.wateringCanLevel = Math.min(7, Math.max(1, Number(parts[1]) || 1));
+      } else if (parts[0] === "idleTime") {
+        data.idleTime = Number(parts[1]) || 0;
+      } else if (parts[0] === "yieldMode") {
+        data.yieldMode = parts[1] || "avg";
+      } else if (parts[0] === "name" || parts[0] === "作物名") {
+        headerPassed = true;
+      } else if (headerPassed && parts.length >= 2) {
+        const name = parts[0];
+        data[name] = {
+          lv: Number(parts[1]) || 1
+        };
+      }
+    });
+
+    localStorage.setItem(STORAGE, JSON.stringify(data));
+    loadSettings();
+    calculate();
+    alert("CSVをインポートしました");
+  };
+  reader.readAsText(file);
+  event.target.value = "";
+}
+
+function resetAll() {
+  if (confirm("すべての設定をリセットしますか？")) {
+    localStorage.removeItem(STORAGE);
+    document.getElementById("userLevel").value = 1;
+    document.getElementById("wateringCanLevel").value = 1;
+    document.getElementById("idleTime").value = 0;
+    document.getElementById("yieldMode").value = "avg";
+    loadSettings();
+    calculate();
+  }
+}
+
+initGlobalSelects();
+loadSettings();
+calculate();
+</script>
+</body>
+</html>
