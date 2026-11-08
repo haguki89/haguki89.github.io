@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作物情報一覧 - ぽこぽこファーム 時間効率計算</title>
+<style>
+  :root { --bg:#f4f8f4; --card:#fff; --primary:#2e7d32; --text:#333; }
+  body { font-family: system-ui, "Hiragino Sans", sans-serif; background:var(--bg); color:var(--text); margin:0; padding:16px; display:flex; flex-direction:column; min-height:100vh; }
+  .container { max-width:1200px; margin:0 auto; flex:1; }
+  h1 { text-align:center; color:var(--primary); margin-bottom:8px; }
+  h2 { color:var(--primary); border-bottom:2px solid #e8f5e9; padding-bottom:8px; }
+  .section { background:var(--card); padding:20px; border-radius:12px; margin-bottom:24px; box-shadow:0 2px 6px rgba(0,0,0,.08); }
+  table { width:100%; border-collapse:collapse; background:var(--card); border-radius:12px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,.08); }
+  th, td { padding:10px 12px; text-align:left; border-bottom:1px solid #eee; }
+  th { background:#e8f5e9; font-weight:600; }
+  tr:hover { background:#f9f9f9; }
+  .note { font-size:.9em; color:#666; }
+  a { color:var(--primary); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  footer { margin-top:40px; padding:20px 16px; background:#e8f5e9; text-align:center; font-size:0.9em; color:#555; border-top:1px solid #c8e6c9; }
+  footer a { color:var(--primary); }
+  .nav { text-align:center; margin-bottom:20px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🌱 作物情報一覧</h1>
+  <div class="nav"><a href="index.html">← 効率計算に戻る</a></div>
+
+  <div class="section">
+    <h2>作物一覧（初期値）</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>作物名</th>
+          <th>エリア</th>
+          <th>開放Lv</th>
+          <th>成長時間(分)</th>
+          <th>基本売値</th>
+          <th>収穫数(最小)</th>
+          <th>収穫数(最大)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>にんじん</td><td>畑</td><td>1</td><td>3</td><td>2</td><td>1</td><td>2</td></tr>
+        <tr><td>トマト</td><td>畑</td><td>1</td><td>15</td><td>4</td><td>3</td><td>5</td></tr>
+        <tr><td>とうもろこし</td><td>畑</td><td>1</td><td>45</td><td>14</td><td>3</td><td>4</td></tr>
+        <tr><td>かぼちゃ</td><td>畑</td><td>1</td><td>120</td><td>150</td><td>1</td><td>1</td></tr>
+        <tr><td>小麦</td><td>畑</td><td>2</td><td>30</td><td>6</td><td>4</td><td>6</td></tr>
+        <tr><td>キャベツ</td><td>畑</td><td>4</td><td>40</td><td>40</td><td>2</td><td>2</td></tr>
+        <tr><td>すいか</td><td>畑</td><td>6</td><td>240</td><td>320</td><td>1</td><td>1</td></tr>
+        <tr><td>いちご</td><td>畑</td><td>25</td><td>180</td><td>70</td><td>4</td><td>5</td></tr>
+        <tr><td>じゃがいも</td><td>畑</td><td>35</td><td>120</td><td>45</td><td>4</td><td>6</td></tr>
+        <tr><td>さつまいも</td><td>畑</td><td>35</td><td>240</td><td>130</td><td>3</td><td>4</td></tr>
+        <tr><td>お米</td><td>畑</td><td>20</td><td>70</td><td>100</td><td>1</td><td>2</td></tr>
+        <tr><td>メロン</td><td>畑</td><td>50</td><td>300</td><td>800</td><td>1</td><td>1</td></tr>
+        <tr><td>レタス</td><td>畑</td><td>15</td><td>90</td><td>55</td><td>2</td><td>3</td></tr>
+        <tr><td>りんご</td><td>果樹園</td><td>8</td><td>360</td><td>40</td><td>3</td><td>4</td></tr>
+        <tr><td>もも</td><td>果樹園</td><td>10</td><td>240</td><td>90</td><td>2</td><td>3</td></tr>
+        <tr><td>みかん</td><td>果樹園</td><td>30</td><td>300</td><td>70</td><td>4</td><td>5</td></tr>
+        <tr><td>スターフルーツ</td><td>果樹園</td><td>50</td><td>300</td><td>150</td><td>4</td><td>5</td></tr>
+        <tr><td>パイナップル</td><td>果樹園</td><td>55</td><td>360</td><td>400</td><td>2</td><td>3</td></tr>
+        <tr><td>レモン</td><td>果樹園</td><td>60</td><td>330</td><td>450</td><td>2</td><td>3</td></tr>
+        <tr><td>ぶどう</td><td>果樹園</td><td>40</td><td>300</td><td>120</td><td>4</td><td>5</td></tr>
+        <tr><td>マスカット</td><td>果樹園</td><td>65</td><td>360</td><td>560</td><td>2</td><td>3</td></tr>
+        <tr><td>さくらんぼ</td><td>果樹園</td><td>20</td><td>270</td><td>30</td><td>8</td><td>10</td></tr>
+      </tbody>
+    </table>
+    <p class="note" style="margin-top:12px;">※ 数値はプレイヤー報告を参考にした初期値です。ゲーム内仕様と異なる場合はご連絡ください。</p>
+  </div>
+
+  <div class="section">
+    <h2>種レベルの効果</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>種Lv</th>
+          <th>成長時間</th>
+          <th>売値</th>
+          <th>収穫数ボーナス</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>効果なし</td><td>効果なし</td><td>なし</td></tr>
+        <tr><td>2</td><td>-10%</td><td>効果なし</td><td>なし</td></tr>
+        <tr><td>3</td><td>効果なし</td><td>+20%</td><td>なし</td></tr>
+        <tr><td>4</td><td>効果なし</td><td>効果なし</td><td>25%の確率で+1（期待値+0.25）</td></tr>
+        <tr><td>5</td><td>-20%</td><td>+40%</td><td>なし</td></tr>
+        <tr><td>6</td><td>-30%</td><td>+60%</td><td>なし</td></tr>
+        <tr><td>7</td><td>-50%</td><td>+100%</td><td>必ず+2</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>じょうろレベルの効果</h2>
+    <p>じょうろは成長開始時に使用した想定で計算しています。効果時間中は成長速度が上がります。</p>
+    <table>
+      <thead>
+        <tr>
+          <th>じょうろLv</th>
+          <th>効果時間</th>
+          <th>効果内容</th>
+          <th>成長速度倍率（効果中）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>15分</td><td>4秒に1秒減</td><td>1.25倍</td></tr>
+        <tr><td>2</td><td>15分</td><td>3秒に1秒減</td><td>約1.33倍</td></tr>
+        <tr><td>3</td><td>15分</td><td>2秒に1秒減</td><td>1.50倍</td></tr>
+        <tr><td>4</td><td>15分</td><td>3秒に2秒減</td><td>約1.67倍</td></tr>
+        <tr><td>5</td><td>15分</td><td>2秒に2秒減</td><td>2.00倍</td></tr>
+        <tr><td>6</td><td>20分</td><td>2秒に2秒減</td><td>2.00倍</td></tr>
+        <tr><td>7</td><td>不明</td><td>不明（暫定でLv6と同じ）</td><td>2.00倍</td></tr>
+      </tbody>
+    </table>
+    <p class="note" style="margin-top:12px;">※ 効果時間を超えた分は通常速度で成長します。Lv7の正確な仕様がわかり次第更新します。</p>
+  </div>
+</div>
+
+<footer>
+  <p>当サイトはファンメイドです。公式とは一切関係ありません。</p>
+  <p><a href="index.html">効率計算に戻る</a> ｜ <a href="contact.html">お問い合わせ</a></p>
+  <p>© 2026 ぽこぽこファーム 時間効率計算ツール</p>
+</footer>
+</body>
+</html>
