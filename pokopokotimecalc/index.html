@@ -4,36 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ぽこぽこファーム 時間効率計算</title>
-<style>
-  :root { --bg:#f4f8f4; --card:#fff; --primary:#2e7d32; --text:#333; }
-  body { font-family: system-ui, "Hiragino Sans", sans-serif; background:var(--bg); color:var(--text); margin:0; padding:16px; display:flex; flex-direction:column; min-height:100vh; }
-  .container { max-width:1300px; margin:0 auto; flex:1; }
-  h1 { text-align:center; color:var(--primary); margin-bottom:4px; }
-  .user-level-box, .section { background:var(--card); padding:16px; border-radius:12px; margin-bottom:20px; box-shadow:0 2px 6px rgba(0,0,0,.08); }
-  .section h2 { margin-top:0; color:var(--primary); border-bottom:2px solid #e8f5e9; padding-bottom:8px; }
-  .crop-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-top:12px; }
-  .crop-item { border:1px solid #ddd; border-radius:8px; padding:10px; background:#fafafa; }
-  .crop-item.locked { opacity:0.65; }
-  select { padding:4px; }
-  .global-select { width:90px; font-size:1.05em; }
-  input[type="number"] { padding:4px; font-size:1.05em; width:90px; }
-  table { width:100%; border-collapse:collapse; background:var(--card); border-radius:12px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,.08); font-size:0.92em; }
-  th, td { padding:8px 10px; text-align:left; border-bottom:1px solid #eee; white-space:nowrap; }
-  th { background:#e8f5e9; }
-  .rank1 { background:#fff8e1; font-weight:bold; }
-  .rank2 { background:#f1f8e9; }
-  .high { color:#d32f2f; font-weight:bold; }
-  button { background:var(--primary); color:#fff; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; margin:4px; }
-  button:hover { background:#1b5e20; }
-  .note { font-size:.85em; color:#666; }
-  .csv-controls { margin-top:8px; }
-  .global-inputs { display:flex; gap:24px; flex-wrap:wrap; align-items:center; }
-  .ranking-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:8px; }
-  .ranking-controls { display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
-  footer { margin-top:40px; padding:20px 16px; background:#e8f5e9; text-align:center; font-size:0.9em; color:#555; border-top:1px solid #c8e6c9; }
-  footer a { color:var(--primary); text-decoration:none; }
-  footer a:hover { text-decoration:underline; }
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
@@ -59,7 +30,8 @@
       </label>
     </div>
     <p class="note">※1 当サイトはサーバー側にデータを保存しません。CSVエクスポート/インポートをご利用ください。
-    <br>※2 じょうろレベル7の効果不明のため、暫定でレベル6と同じにしています。</p>
+    <br>※2 じょうろレベル7の効果不明のため、暫定でレベル6と同じにしています。
+    <br>※3 畑作物は種の仕入れ値を差し引いた純利益で計算しています（メロンは不明のため0）。</p>
   </div>
 
   <div class="section">
@@ -106,14 +78,14 @@
         <th>種Lv</th>
         <th>成長時間(分)</th>
         <th>収穫数</th>
-        <th>予想売値</th>
-        <th>コイン/分</th>
-        <th>コイン/時</th>
+        <th class="sort-header" data-sort="price" onclick="setSort('price')">純利益<span class="sort-mark">⇅</span></th>
+        <th class="sort-header" data-sort="perMin" onclick="setSort('perMin')">コイン/分<span class="sort-mark">⇅</span></th>
+        <th class="sort-header" data-sort="perHour" onclick="setSort('perHour')">コイン/時<span class="sort-mark">⇅</span></th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
-  <p class="note">※1 放置時間を設定すると、成長時間がそれより短い作物は「放置時間に1回収穫」として計算します。<br>※2 種Lv4は25%で+1（期待値）、種Lv7は必ず+2を収穫数に加算しています。</p>
+  <p class="note">※1 放置時間を設定すると、成長時間がそれより短い作物は「放置時間に1回収穫」として計算します。<br>※2 種Lv4は25%で+1（期待値）、種Lv7は必ず+2を収穫数に加算しています。<br>※3 「純利益」は売値から種の仕入れ値を差し引いた値です。ヘッダーの⇅をクリックでソート切り替え。</p>
 </div>
 
 <footer>
@@ -122,33 +94,9 @@
   <p>© 2026 ぽこぽこファーム 時間効率計算ツール</p>
 </footer>
 
+<script src="crops-data.js"></script>
 <script>
-const CROPS = [
-  { name: "にんじん", unlockLv: 1, baseTime: 3, basePrice: 2, minYield: 1, maxYield: 2, type: "畑" },
-  { name: "トマト", unlockLv: 1, baseTime: 15, basePrice: 4, minYield: 3, maxYield: 5, type: "畑" },
-  { name: "とうもろこし", unlockLv: 1, baseTime: 45, basePrice: 14, minYield: 3, maxYield: 4, type: "畑" },
-  { name: "かぼちゃ", unlockLv: 1, baseTime: 120, basePrice: 150, minYield: 1, maxYield: 1, type: "畑" },
-  { name: "小麦", unlockLv: 2, baseTime: 30, basePrice: 6, minYield: 4, maxYield: 6, type: "畑" },
-  { name: "キャベツ", unlockLv: 4, baseTime: 40, basePrice: 40, minYield: 2, maxYield: 2, type: "畑" },
-  { name: "すいか", unlockLv: 6, baseTime: 240, basePrice: 320, minYield: 1, maxYield: 1, type: "畑" },
-  { name: "いちご", unlockLv: 25, baseTime: 180, basePrice: 70, minYield: 4, maxYield: 5, type: "畑" },
-  { name: "じゃがいも", unlockLv: 35, baseTime: 120, basePrice: 45, minYield: 4, maxYield: 6, type: "畑" },
-  { name: "さつまいも", unlockLv: 35, baseTime: 240, basePrice: 130, minYield: 3, maxYield: 4, type: "畑" },
-  { name: "お米", unlockLv: 20, baseTime: 70, basePrice: 100, minYield: 1, maxYield: 2, type: "畑" },
-  { name: "メロン", unlockLv: 50, baseTime: 300, basePrice: 800, minYield: 1, maxYield: 1, type: "畑" },
-  { name: "レタス", unlockLv: 15, baseTime: 90, basePrice: 55, minYield: 2, maxYield: 3, type: "畑" },
-  { name: "りんご", unlockLv: 8, baseTime: 360, basePrice: 40, minYield: 3, maxYield: 4, type: "果樹園" },
-  { name: "もも", unlockLv: 10, baseTime: 240, basePrice: 90, minYield: 2, maxYield: 3, type: "果樹園" },
-  { name: "みかん", unlockLv: 30, baseTime: 300, basePrice: 70, minYield: 4, maxYield: 5, type: "果樹園" },
-  { name: "スターフルーツ", unlockLv: 50, baseTime: 300, basePrice: 150, minYield: 4, maxYield: 5, type: "果樹園" },
-  { name: "パイナップル", unlockLv: 55, baseTime: 360, basePrice: 400, minYield: 2, maxYield: 3, type: "果樹園" },
-  { name: "レモン", unlockLv: 60, baseTime: 330, basePrice: 450, minYield: 2, maxYield: 3, type: "果樹園" },
-  { name: "ぶどう", unlockLv: 40, baseTime: 300, basePrice: 120, minYield: 4, maxYield: 5, type: "果樹園" },
-  { name: "マスカット", unlockLv: 65, baseTime: 360, basePrice: 560, minYield: 2, maxYield: 3, type: "果樹園" },
-  { name: "さくらんぼ", unlockLv: 20, baseTime: 270, basePrice: 30, minYield: 8, maxYield: 10, type: "果樹園" }
-];
-
-const STORAGE = "pokopoko_efficiency_v20";
+const STORAGE = "pokopoko_efficiency_v24";
 
 const WATERING = [
   null,
@@ -160,6 +108,8 @@ const WATERING = [
   { duration: 20, extra: 1 },
   { duration: 20, extra: 1 }
 ];
+
+let currentSort = "price";
 
 function initGlobalSelects() {
   const waterSelect = document.getElementById("wateringCanLevel");
@@ -238,17 +188,35 @@ function getSelectedYield(crop, mode) {
   return (crop.minYield + crop.maxYield) / 2;
 }
 
+function setSort(mode) {
+  currentSort = mode;
+  updateSortMarks();
+  saveSettings();
+  calculate();
+}
+
+function updateSortMarks() {
+  document.querySelectorAll(".sort-header").forEach(th => {
+    th.classList.remove("sort-active");
+    if (th.dataset.sort === currentSort) {
+      th.classList.add("sort-active");
+    }
+  });
+}
+
 function loadSettings() {
   const saved = JSON.parse(localStorage.getItem(STORAGE) || "{}");
   const userLv = Math.min(75, Math.max(1, saved.userLevel || 1));
   const waterLv = Math.min(7, Math.max(0, saved.wateringCanLevel ?? 0));
   const idle = saved.idleTime || 0;
   const yieldMode = saved.yieldMode || "avg";
+  currentSort = saved.sortMode || "price";
 
   document.getElementById("userLevel").value = userLv;
   document.getElementById("wateringCanLevel").value = waterLv;
   document.getElementById("idleTime").value = idle;
   document.getElementById("yieldMode").value = yieldMode;
+  updateSortMarks();
 
   renderInputs("fieldInputs", "畑", saved);
   renderInputs("orchardInputs", "果樹園", saved);
@@ -298,7 +266,8 @@ function saveSettings() {
     userLevel: getUserLevel(),
     wateringCanLevel: getWateringCanLevel(),
     idleTime: getIdleTime(),
-    yieldMode: getYieldMode()
+    yieldMode: getYieldMode(),
+    sortMode: currentSort
   };
   CROPS.forEach((c, i) => {
     const lvEl = document.getElementById("lv_" + i);
@@ -333,8 +302,9 @@ function calculate() {
     const yieldBonus = getYieldBonus(lv);
     const finalYield = baseYield + yieldBonus;
 
-    const price = Math.round(c.basePrice * priceMult * finalYield);
-    const perMin = price / cycleTime;
+    const grossPrice = Math.round(c.basePrice * priceMult * finalYield);
+    const netPrice = grossPrice - (c.seedCost || 0);
+    const perMin = netPrice / cycleTime;
     const perHour = perMin * 60;
 
     results.push({
@@ -343,13 +313,19 @@ function calculate() {
       lv,
       growthTime: growthTime.toFixed(1),
       yieldValue: finalYield % 1 === 0 ? finalYield : finalYield.toFixed(2),
-      price,
-      perMin: perMin.toFixed(2),
+      price: netPrice,
+      perMin: Number(perMin.toFixed(2)),
       perHour: Math.round(perHour)
     });
   });
 
-  results.sort((a, b) => b.perHour - a.perHour);
+  if (currentSort === "perMin") {
+    results.sort((a, b) => b.perMin - a.perMin);
+  } else if (currentSort === "perHour") {
+    results.sort((a, b) => b.perHour - a.perHour);
+  } else {
+    results.sort((a, b) => b.price - a.price);
+  }
 
   const tbody = document.querySelector("#resultTable tbody");
   tbody.innerHTML = "";
@@ -402,7 +378,7 @@ function importCSV(event) {
   reader.onload = function(e) {
     const text = e.target.result.replace(/^\uFEFF/, "");
     const lines = text.split(/\r?\n/).filter(l => l.trim());
-    const data = { userLevel: 1, wateringCanLevel: 0, idleTime: 0, yieldMode: "avg" };
+    const data = { userLevel: 1, wateringCanLevel: 0, idleTime: 0, yieldMode: "avg", sortMode: "price" };
     let headerPassed = false;
 
     lines.forEach(line => {
@@ -415,6 +391,8 @@ function importCSV(event) {
         data.idleTime = Number(parts[1]) || 0;
       } else if (parts[0] === "yieldMode") {
         data.yieldMode = parts[1] || "avg";
+      } else if (parts[0] === "sortMode") {
+        data.sortMode = parts[1] || "price";
       } else if (parts[0] === "name" || parts[0] === "作物名") {
         headerPassed = true;
       } else if (headerPassed && parts.length >= 2) {
@@ -441,6 +419,8 @@ function resetAll() {
     document.getElementById("wateringCanLevel").value = 0;
     document.getElementById("idleTime").value = 0;
     document.getElementById("yieldMode").value = "avg";
+    currentSort = "price";
+    updateSortMarks();
     loadSettings();
     calculate();
   }
