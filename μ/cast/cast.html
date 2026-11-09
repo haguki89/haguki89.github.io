@@ -20,19 +20,18 @@
 <body>
   <nav class="nav">
     <div class="nav-inner">
-      <a href="../index.html" class="nav-logo">μ隔離観察施設</a>
-      <!-- ハンバーガーボタン（スマホ用） -->
+      <a href="https://mfre.jp/μ/" class="nav-logo">μ隔離観察施設</a>
       <button class="nav-toggle" aria-label="メニューを開く">
         <span></span>
         <span></span>
         <span></span>
       </button>
       <ul class="nav-links">
-        <li><a href="../index.html">HOME</a></li>
-        <li><a href="../index.html#briefing">BRIEFING</a></li>
-        <li><a href="./cast.html" class="current">CAST</a></li>
-        <li><a href="../index.html#voice">VOICE</a></li>
-        <li><a href="../access.html">ACCESS</a></li>
+        <li><a href="https://mfre.jp/μ/">HOME</a></li>
+        <li><a href="https://mfre.jp/μ/#briefing">BRIEFING</a></li>
+        <li><a href="https://mfre.jp/cast/cast" class="current">CAST</a></li>
+        <li><a href="https://mfre.jp/μ/#voice">VOICE</a></li>
+        <li><a href="https://mfre.jp/μ/access">ACCESS</a></li>
       </ul>
     </div>
   </nav>
@@ -380,7 +379,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // キジマ ショウタのカードを特定
   const cards = document.querySelectorAll('.card');
   let shotaCard = null;
   cards.forEach(card => {
@@ -395,23 +393,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const photo = shotaCard.querySelector('.photo');
   let doubleClicked = false;
 
-  // 写真をダブルクリックしたらフラグを立てる
   photo.addEventListener('dblclick', (e) => {
     e.preventDefault();
     doubleClicked = true;
   });
 
-  // HOMEリンクだけを捕捉（hrefが ../index.html で終わるもの、またはテキストがHOMEのもの）
   const homeLinks = document.querySelectorAll('.nav-links a');
   homeLinks.forEach(link => {
-    const isHome = link.getAttribute('href') === '../index.html' || 
+    const isHome = link.getAttribute('href') === 'https://mfre.jp/μ/' || 
                    link.textContent.trim() === 'HOME';
 
     if (isHome) {
       link.addEventListener('click', (e) => {
         if (doubleClicked) {
           e.preventDefault();
-          window.open('shotahome.html', '_blank');
+          window.open('https://mfre.jp/μ/cast/shotahome', '_blank');
           doubleClicked = false;
         }
       });
