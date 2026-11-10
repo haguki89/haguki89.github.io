@@ -13,92 +13,115 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
-  <h1>🌱 ぽこぽこファーム 時間効率計算</h1>
-  <p style="text-align:center;color:#666;">ユーザーレベル・じょうろレベル・種レベルを選択／入力して時間効率を一覧化</p>
+<div class="page-wrapper">
+<!--
+  <aside class="ad-side">
+    <a href="#" target="_blank" rel="noopener">
+      <img src="bosyu.png" alt="左広告">
+    </a>
+      <a href="#" target="_blank" rel="noopener">
+    <img src="bosyu.png" alt="左広告2">
+  </a>
+  </aside>
+-->
+  <div class="container">
+    <h1>🌱 ぽこぽこファーム 時間効率計算</h1>
+    <p style="text-align:center;color:#666;">ユーザーレベル・じょうろレベル・種レベルを選択／入力して時間効率を一覧化</p>
 
-  <div class="user-level-box">
-    <div class="global-inputs">
-      <label><strong>ユーザーレベル</strong>　
-        <input type="number" id="userLevel" min="1" max="75" value="1" onchange="onUserLevelChange()">
-      </label>
-      <label><strong>じょうろレベル</strong>　
-        <select id="wateringCanLevel" class="global-select" onchange="calculate()"></select>
-      </label>
+    <div class="user-level-box">
+      <div class="global-inputs">
+        <label><strong>ユーザーレベル</strong>　
+          <input type="number" id="userLevel" min="1" max="75" value="1" onchange="onUserLevelChange()">
+        </label>
+        <label><strong>じょうろレベル</strong>　
+          <select id="wateringCanLevel" class="global-select" onchange="calculate()"></select>
+        </label>
+      </div>
+      <button onclick="calculate()">効率を計算</button>
+      <button onclick="resetAll()" style="background:#666;">全リセット</button>
+      <div class="csv-controls">
+        <button onclick="exportCSV()">CSVエクスポート</button>
+        <label style="margin-left:8px;">
+          <input type="file" id="csvImport" accept=".csv" style="display:none;" onchange="importCSV(event)">
+          <button onclick="document.getElementById('csvImport').click()">CSVインポート</button>
+        </label>
+      </div>
+      <p class="note">※1 当サイトはサーバー側にデータを保存しません。CSVエクスポート/インポートをご利用ください。
+      <br>※2 じょうろレベル7：効果時間25分・3秒ごとに4秒減。
+      <br>※3 畑作物は種の仕入れ値を差し引いた純利益で計算しています。
+      <br>
+      <br>今後の更新予定
+      <br>・経験値効率計算の追加
+      <br>・ねこちゃん稼働の効率計算追加
+      <br>・アプデ対応
+      <br>・基本情報不明の作物の情報更新(開発者は今50レベル)
+      <br>・宣伝してもらえると承認欲求が満たされて頑張るかも</p>
     </div>
-    <button onclick="calculate()">効率を計算</button>
-    <button onclick="resetAll()" style="background:#666;">全リセット</button>
-    <div class="csv-controls">
-      <button onclick="exportCSV()">CSVエクスポート</button>
-      <label style="margin-left:8px;">
-        <input type="file" id="csvImport" accept=".csv" style="display:none;" onchange="importCSV(event)">
-        <button onclick="document.getElementById('csvImport').click()">CSVインポート</button>
-      </label>
+
+    <div class="section">
+      <h2>畑</h2>
+      <div class="crop-grid" id="fieldInputs"></div>
     </div>
-    <p class="note">※1 当サイトはサーバー側にデータを保存しません。CSVエクスポート/インポートをご利用ください。
-    <br>※2 じょうろレベル7の効果不明のため、暫定でレベル6と同じにしています。
-    <br>※3 畑作物は種の仕入れ値を差し引いた純利益で計算しています。
-    <br>
-    <br>今後の更新予定
-    <br>・経験値効率計算の追加
-    <br>・ねこちゃん稼働の効率計算追加
-    <br>・アプデ対応
-    <br>・基本情報不明の作物の情報更新(開発者は今50レベル)
-    <br>・宣伝してもらえると承認欲求が満たされて頑張るかも</p>
-  </div>
 
-  <div class="section">
-    <h2>畑</h2>
-    <div class="crop-grid" id="fieldInputs"></div>
-  </div>
-
-  <div class="section">
-    <h2>果樹園</h2>
-    <div class="crop-grid" id="orchardInputs"></div>
-  </div>
-
-  <div class="ranking-header">
-    <h2 style="margin:0;">効率ランキング（開放済みのみ）</h2>
-    <div class="ranking-controls">
-      <label><strong>放置時間</strong>　
-        <select id="idleTime" onchange="calculate()">
-          <option value="0">0分（フル稼働）</option>
-          <option value="15">15分</option>
-          <option value="20">20分</option>
-          <option value="60">1時間</option>
-          <option value="180">3時間</option>
-          <option value="480">8時間</option>
-          <option value="720">12時間</option>
-          <option value="1440">24時間</option>
-        </select>
-      </label>
-      <label><strong>収穫数</strong>　
-        <select id="yieldMode" onchange="calculate()">
-          <option value="min">最小値</option>
-          <option value="avg" selected>平均値</option>
-          <option value="max">最大値</option>
-        </select>
-      </label>
-      <button onclick="calculate()" style="padding:6px 12px;">再計算</button>
+    <div class="section">
+      <h2>果樹園</h2>
+      <div class="crop-grid" id="orchardInputs"></div>
     </div>
+
+    <div class="ranking-header">
+      <h2 style="margin:0;">効率ランキング（開放済みのみ）</h2>
+      <div class="ranking-controls">
+        <label><strong>放置時間</strong>　
+          <select id="idleTime" onchange="calculate()">
+            <option value="0">0分（フル稼働）</option>
+            <option value="15">15分</option>
+            <option value="20">20分</option>
+            <option value="60">1時間</option>
+            <option value="180">3時間</option>
+            <option value="480">8時間</option>
+            <option value="720">12時間</option>
+            <option value="1440">24時間</option>
+          </select>
+        </label>
+        <label><strong>収穫数</strong>　
+          <select id="yieldMode" onchange="calculate()">
+            <option value="min">最小値</option>
+            <option value="avg" selected>平均値</option>
+            <option value="max">最大値</option>
+          </select>
+        </label>
+        <button onclick="calculate()" style="padding:6px 12px;">再計算</button>
+      </div>
+    </div>
+    <table id="resultTable">
+      <thead>
+        <tr>
+          <th>順位</th>
+          <th>作物</th>
+          <th>エリア</th>
+          <th>種Lv</th>
+          <th>成長時間(分)</th>
+          <th>収穫数</th>
+          <th class="sort-header" data-sort="price" onclick="setSort('price')">純利益<span class="sort-mark">⇅</span></th>
+          <th class="sort-header" data-sort="perMin" onclick="setSort('perMin')">コイン/分<span class="sort-mark">⇅</span></th>
+          <th class="sort-header" data-sort="perHour" onclick="setSort('perHour')">コイン/時<span class="sort-mark">⇅</span></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <p class="note">※1 放置時間を設定すると、成長時間がそれより短い作物は「放置時間に1回収穫」として計算します。<br>※2 種Lv4は25%で+1（期待値）、種Lv7は必ず+2を収穫数に加算しています。<br>※3 「純利益」は売値から種の仕入れ値を差し引いた値です。ヘッダーの⇅をクリックでソート切り替え。</p>
   </div>
-  <table id="resultTable">
-    <thead>
-      <tr>
-        <th>順位</th>
-        <th>作物</th>
-        <th>エリア</th>
-        <th>種Lv</th>
-        <th>成長時間(分)</th>
-        <th>収穫数</th>
-        <th class="sort-header" data-sort="price" onclick="setSort('price')">純利益<span class="sort-mark">⇅</span></th>
-        <th class="sort-header" data-sort="perMin" onclick="setSort('perMin')">コイン/分<span class="sort-mark">⇅</span></th>
-        <th class="sort-header" data-sort="perHour" onclick="setSort('perHour')">コイン/時<span class="sort-mark">⇅</span></th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-  <p class="note">※1 放置時間を設定すると、成長時間がそれより短い作物は「放置時間に1回収穫」として計算します。<br>※2 種Lv4は25%で+1（期待値）、種Lv7は必ず+2を収穫数に加算しています。<br>※3 「純利益」は売値から種の仕入れ値を差し引いた値です。ヘッダーの⇅をクリックでソート切り替え。</p>
+
+  <!--
+  <aside class="ad-side">
+    <a href="#" target="_blank" rel="noopener">
+      <img src="bosyu.png" alt="右広告">
+    </a>
+    <a href="#" target="_blank" rel="noopener">
+      <img src="bosyu.png" alt="右広告2">
+    </a>
+  </aside>
+  -->
 </div>
 
 <footer>
