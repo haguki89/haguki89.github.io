@@ -93,6 +93,7 @@
       text-align: center;
       color: var(--muted);
       font-size: 13px;
+      user-select: none;
     }
   </style>
 </head>
@@ -129,7 +130,31 @@
       <p>*本イベント内の設定情報です。実在の人物を指すものではありません。</p>
     </div>
 
-    <footer>μ隔離観察施設 &copy;</footer>
+    <footer id="secretFooter">μ隔離観察施設 &copy;</footer>
   </div>
+
+  <script>
+    let clickCount = 0;
+    let clickTimer = null;
+
+    document.getElementById('secretFooter').addEventListener('click', function () {
+      clickCount++;
+
+      clearTimeout(clickTimer);
+      clickTimer = setTimeout(() => {
+        clickCount = 0;
+      }, 3000);
+
+      if (clickCount === 5) {
+        clickCount = 0;
+        const password = prompt('パスワードを入力してください');
+        if (password === 'admin') {
+          window.location.href = 'https://mfre.jp/%CE%BC/cast/admin';
+        } else if (password !== null) {
+          alert('パスワードが違います');
+        }
+      }
+    });
+  </script>
 </body>
 </html>

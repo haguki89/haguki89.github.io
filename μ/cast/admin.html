@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="../png/favicon.png" type="image/png">
+  <title>管理者ページ | ショウタの日記</title>
+  <style>
+    :root {
+      --bg: #f4f8f4;
+      --card: #ffffff;
+      --green: #6b9e78;
+      --green-soft: #a8c5b0;
+      --green-dark: #4a7c59;
+      --text: #3a4a3e;
+      --muted: #7a8a7e;
+      --border: #d4e4d8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Yu Gothic", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--green-dark);
+      font-size: 1.6rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(107, 158, 120, 0.08);
+    }
+
+    .card h2 {
+      color: var(--green);
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .card p {
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--green);
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      margin-top: 8px;
+      margin-right: 8px;
+    }
+
+    .btn:hover {
+      background: var(--green-dark);
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 32px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .back:hover {
+      color: var(--green-dark);
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>管理者ページ</h1>
+
+    <div class="card">
+      <h2>日記管理</h2>
+      <p>日記の内容を編集・追加できます（サンプル）</p>
+      <a href="#" class="btn">日記を編集</a>
+      <a href="#" class="btn">新規投稿</a>
+    </div>
+
+    <div class="card">
+      <h2>設定</h2>
+      <p>パスワード変更や各種設定（サンプル）</p>
+      <a href="#" class="btn">設定を開く</a>
+    </div>
+
+    <div class="card">
+      <h2>ステータス</h2>
+      <p>現在のログイン状態：管理者</p>
+      <p>最終ログイン：2026/11/10</p>
+    </div>
+
+    <a href="https://mfre.jp/μ/cast/shotahome" class="back">← 日記ページに戻る</a>
+
+    <footer>μ隔離観察施設 &copy;</footer>
+  </div>
+</body>
+</html>
