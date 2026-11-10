@@ -95,6 +95,60 @@
       font-size: 13px;
       user-select: none;
     }
+
+    /* カスタムモーダル */
+    #passwordModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #passwordModal .modal-inner {
+      background: #fff;
+      padding: 28px 32px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 380px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    #passwordModal p {
+      margin-bottom: 16px;
+      font-size: 15px;
+      color: #3a4a3e;
+    }
+
+    #pwInput {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d4e4d8;
+      border-radius: 8px;
+      font-size: 15px;
+      margin-bottom: 16px;
+    }
+
+    #passwordModal button {
+      border: none;
+      padding: 8px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #pwOk {
+      background: #6b9e78;
+      color: #fff;
+      margin-right: 8px;
+    }
+
+    #pwCancel {
+      background: #e0e0e0;
+    }
   </style>
 </head>
 <body>
@@ -133,9 +187,26 @@
     <footer id="secretFooter">μ隔離観察施設 &copy;</footer>
   </div>
 
+  <!-- カスタムモーダル -->
+  <div id="passwordModal">
+    <div class="modal-inner">
+      <p>管理者パスワードを入力してください</p>
+      <input type="password" id="pwInput" placeholder="パスワード">
+      <div>
+        <button id="pwOk">OK</button>
+        <button id="pwCancel">キャンセル</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let clickCount = 0;
     let clickTimer = null;
+
+    const modal = document.getElementById('passwordModal');
+    const pwInput = document.getElementById('pwInput');
+    const pwOk = document.getElementById('pwOk');
+    const pwCancel = document.getElementById('pwCancel');
 
     document.getElementById('secretFooter').addEventListener('click', function () {
       clickCount++;
@@ -147,13 +218,27 @@
 
       if (clickCount === 5) {
         clickCount = 0;
-        const password = prompt('パスワードを入力してください');
-        if (password === 'admin') {
-          window.location.href = 'https://mfre.jp/%CE%BC/cast/admin';
-        } else if (password !== null) {
-          alert('パスワードが違います');
-        }
+        modal.style.display = 'flex';
+        pwInput.value = '';
+        pwInput.focus();
       }
+    });
+
+    pwOk.addEventListener('click', function () {
+      if (pwInput.value === 'admin') {
+        window.location.href = 'admin.html';
+      } else {
+        alert('パスワードが違います');
+        modal.style.display = 'none';
+      }
+    });
+
+    pwCancel.addEventListener('click', function () {
+      modal.style.display = 'none';
+    });
+
+    pwInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') pwOk.click();
     });
   </script>
 </body>
