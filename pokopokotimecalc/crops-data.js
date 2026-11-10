@@ -10,7 +10,7 @@ const CROPS = [
   { name: "じゃがいも", unlockLv: 35, baseTime: 120, basePrice: 45, minYield: 4, maxYield: 6, seedCost: 33, type: "畑" },
   { name: "さつまいも", unlockLv: 35, baseTime: 240, basePrice: 130, minYield: 3, maxYield: 4, seedCost: 72, type: "畑" },
   { name: "お米", unlockLv: 20, baseTime: 70, basePrice: 100, minYield: 1, maxYield: 2, seedCost: 66, type: "畑" },
-  { name: "メロン", unlockLv: 50, baseTime: 300, basePrice: 800, minYield: 1, maxYield: 1, seedCost: 0, type: "畑" },
+  { name: "メロン", unlockLv: 50, baseTime: 300, basePrice: 800, minYield: 1, maxYield: 1, seedCost: 100, type: "畑" },
   { name: "レタス", unlockLv: 15, baseTime: 90, basePrice: 55, minYield: 2, maxYield: 3, seedCost: 25, type: "畑" },
   { name: "りんご", unlockLv: 8, baseTime: 360, basePrice: 40, minYield: 3, maxYield: 4, seedCost: 0, type: "果樹園" },
   { name: "もも", unlockLv: 10, baseTime: 240, basePrice: 90, minYield: 2, maxYield: 3, seedCost: 0, type: "果樹園" },
