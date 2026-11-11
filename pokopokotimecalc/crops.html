@@ -48,15 +48,7 @@
           <th>収穫数ボーナス</th>
         </tr>
       </thead>
-      <tbody>
-        <tr><td>1</td><td>効果なし</td><td>効果なし</td><td>なし</td></tr>
-        <tr><td>2</td><td>-10%</td><td>効果なし</td><td>なし</td></tr>
-        <tr><td>3</td><td>効果なし</td><td>+20%</td><td>なし</td></tr>
-        <tr><td>4</td><td>効果なし</td><td>効果なし</td><td>25%の確率で+1（期待値+0.25）</td></tr>
-        <tr><td>5</td><td>-20%</td><td>+40%</td><td>なし</td></tr>
-        <tr><td>6</td><td>-30%</td><td>+60%</td><td>なし</td></tr>
-        <tr><td>7</td><td>-50%</td><td>+100%</td><td>必ず+2</td></tr>
-      </tbody>
+      <tbody id="seedLevelTable"></tbody>
     </table>
   </div>
 
@@ -72,17 +64,9 @@
           <th>成長速度倍率（効果中）</th>
         </tr>
       </thead>
-      <tbody>
-        <tr><td>1</td><td>15分</td><td>4秒に1秒減</td><td>1.25倍</td></tr>
-        <tr><td>2</td><td>15分</td><td>3秒に1秒減</td><td>約1.33倍</td></tr>
-        <tr><td>3</td><td>15分</td><td>2秒に1秒減</td><td>1.50倍</td></tr>
-        <tr><td>4</td><td>15分</td><td>3秒に2秒減</td><td>約1.67倍</td></tr>
-        <tr><td>5</td><td>15分</td><td>2秒に2秒減</td><td>2.00倍</td></tr>
-        <tr><td>6</td><td>20分</td><td>2秒に2秒減</td><td>2.00倍</td></tr>
-        <tr><td>7</td><td>25分</td><td>3秒に4秒減</td><td>2.33倍</td></tr>
-      </tbody>
+      <tbody id="wateringTable"></tbody>
     </table>
-    <p class="note" style="margin-top:12px;">※ 効果時間を超えた分は通常速度で成長します。Lv7の正確な仕様がわかり次第更新します。</p>
+    <p class="note" style="margin-top:12px;">※ 効果時間を超えた分は通常速度で成長します。</p>
   </div>
 </div>
 
@@ -98,7 +82,6 @@ function renderCropTable() {
   const tbody = document.getElementById("cropTable");
   tbody.innerHTML = "";
   CROPS.forEach(c => {
-    const seedCostStr = c.seedCost === 0 && c.name === "メロン" ? "0（不明）" : c.seedCost;
     tbody.innerHTML += `
       <tr>
         <td>${c.name}</td>
@@ -106,13 +89,46 @@ function renderCropTable() {
         <td>${c.unlockLv}</td>
         <td>${c.baseTime}</td>
         <td>${c.basePrice}</td>
-        <td>${seedCostStr}</td>
+        <td>${c.seedCost}</td>
         <td>${c.minYield}</td>
         <td>${c.maxYield}</td>
       </tr>`;
   });
 }
+
+function renderSeedLevelTable() {
+  const tbody = document.getElementById("seedLevelTable");
+  tbody.innerHTML = "";
+  SEED_LEVELS.forEach(s => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${s.lv}</td>
+        <td>${s.time}</td>
+        <td>${s.price}</td>
+        <td>${s.yield}</td>
+      </tr>`;
+  });
+}
+
+function renderWateringTable() {
+  const tbody = document.getElementById("wateringTable");
+  tbody.innerHTML = "";
+  for (let i = 1; i < WATERING.length; i++) {
+    const w = WATERING[i];
+    if (!w) continue;
+    tbody.innerHTML += `
+      <tr>
+        <td>${i}</td>
+        <td>${w.duration}分</td>
+        <td>${w.effect}</td>
+        <td>${w.speed}</td>
+      </tr>`;
+  }
+}
+
 renderCropTable();
+renderSeedLevelTable();
+renderWateringTable();
 </script>
 </body>
 </html>

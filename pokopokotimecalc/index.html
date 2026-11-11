@@ -30,7 +30,7 @@
     <div class="user-level-box">
       <div class="global-inputs">
         <label><strong>ユーザーレベル</strong>　
-          <input type="number" id="userLevel" min="1" max="75" value="1" onchange="onUserLevelChange()">
+          <input type="number" id="userLevel" min="1" max="80" value="1" onchange="onUserLevelChange()">
         </label>
         <label><strong>じょうろレベル</strong>　
           <select id="wateringCanLevel" class="global-select" onchange="calculate()"></select>
@@ -45,16 +45,7 @@
           <button onclick="document.getElementById('csvImport').click()">CSVインポート</button>
         </label>
       </div>
-      <p class="note">※1 当サイトはサーバー側にデータを保存しません。CSVエクスポート/インポートをご利用ください。
-      <br>※2 じょうろレベル7：効果時間25分・3秒ごとに4秒減。
-      <br>※3 畑作物は種の仕入れ値を差し引いた純利益で計算しています。
-      <br>
-      <br>今後の更新予定
-      <br>・経験値効率計算の追加
-      <br>・ねこちゃん稼働の効率計算追加
-      <br>・アプデ対応
-      <br>・基本情報不明の作物の情報更新(開発者は今50レベル)
-      <br>・宣伝してもらえると承認欲求が満たされて頑張るかも</p>
+      <p class="note" id="mainNotes"></p>
     </div>
 
     <div class="section">
@@ -92,6 +83,7 @@
         <button onclick="calculate()" style="padding:6px 12px;">再計算</button>
       </div>
     </div>
+    <p id="level8Warning" class="note" style="color:#d32f2f; font-weight:bold; display:none; margin:8px 0;"></p>
     <table id="resultTable">
       <thead>
         <tr>
@@ -130,26 +122,24 @@
 </footer>
 
 <script src="crops-data.js"></script>
+<script src="notes.js"></script>
 <script>
 const STORAGE = "pokopoko_efficiency_v24";
 
-const WATERING = [
-  null,
-  { duration: 15, extra: 1/4 },
-  { duration: 15, extra: 1/3 },
-  { duration: 15, extra: 1/2 },
-  { duration: 15, extra: 2/3 },
-  { duration: 15, extra: 1 },
-  { duration: 20, extra: 1 },
-  { duration: 25, extra: 4/3 }
-];
-
 let currentSort = "price";
+
+function renderNotes() {
+  const el = document.getElementById("mainNotes");
+  if (el && typeof SITE_NOTES !== "undefined") {
+    el.innerHTML = SITE_NOTES.main;
+  }
+}
 
 function initGlobalSelects() {
   const waterSelect = document.getElementById("wateringCanLevel");
   waterSelect.innerHTML = '<option value="0">未開放</option>';
-  for (let i = 1; i <= 7; i++) {
+  const maxWater = WATERING.length - 1;
+  for (let i = 1; i <= maxWater; i++) {
     const opt = document.createElement("option");
     opt.value = i;
     opt.textContent = i;
@@ -158,28 +148,24 @@ function initGlobalSelects() {
 }
 
 function getPriceMultiplier(lv) {
-  if (lv >= 7) return 2.0;
-  if (lv >= 6) return 1.6;
-  if (lv >= 5) return 1.4;
-  if (lv >= 3) return 1.2;
-  return 1.0;
+  if (lv < 1) return 1.0;
+  const idx = Math.min(lv - 1, SEED_EFFECTS.length - 1);
+  return SEED_EFFECTS[idx].priceMult;
 }
 function getTimeMultiplier(lv) {
-  if (lv >= 7) return 0.5;
-  if (lv >= 6) return 0.7;
-  if (lv >= 5) return 0.8;
-  if (lv >= 2) return 0.9;
-  return 1.0;
+  if (lv < 1) return 1.0;
+  const idx = Math.min(lv - 1, SEED_EFFECTS.length - 1);
+  return SEED_EFFECTS[idx].timeMult;
 }
 function getYieldBonus(lv) {
-  if (lv >= 7) return 2;
-  if (lv >= 4) return 0.25;
-  return 0;
+  if (lv < 1) return 0;
+  const idx = Math.min(lv - 1, SEED_EFFECTS.length - 1);
+  return SEED_EFFECTS[idx].yieldBonus;
 }
 
 function getEffectiveTime(baseTimeMin, wateringLv) {
   if (!wateringLv || wateringLv < 1) return baseTimeMin;
-  const w = WATERING[Math.min(wateringLv, 7)];
+  const w = WATERING[Math.min(wateringLv, WATERING.length - 1)];
   if (!w) return baseTimeMin;
   const speed = 1 + w.extra;
   const D = w.duration;
@@ -192,13 +178,14 @@ function getEffectiveTime(baseTimeMin, wateringLv) {
 function getUserLevel() {
   let lv = Number(document.getElementById("userLevel").value) || 1;
   if (lv < 1) lv = 1;
-  if (lv > 75) lv = 75;
+  if (lv > 80) lv = 80;
   return lv;
 }
 function getWateringCanLevel() {
   let lv = Number(document.getElementById("wateringCanLevel").value) || 0;
+  const max = WATERING.length - 1;
   if (lv < 0) lv = 0;
-  if (lv > 7) lv = 7;
+  if (lv > max) lv = max;
   return lv;
 }
 function getIdleTime() {
@@ -241,8 +228,9 @@ function updateSortMarks() {
 
 function loadSettings() {
   const saved = JSON.parse(localStorage.getItem(STORAGE) || "{}");
-  const userLv = Math.min(75, Math.max(1, saved.userLevel || 1));
-  const waterLv = Math.min(7, Math.max(0, saved.wateringCanLevel ?? 0));
+  const userLv = Math.min(80, Math.max(1, saved.userLevel || 1));
+  const maxWater = WATERING.length - 1;
+  const waterLv = Math.min(maxWater, Math.max(0, saved.wateringCanLevel ?? 0));
   const idle = saved.idleTime || 0;
   const yieldMode = saved.yieldMode || "avg";
   currentSort = saved.sortMode || "price";
@@ -260,16 +248,17 @@ function loadSettings() {
 function renderInputs(containerId, type, saved) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
+  const maxSeed = SEED_EFFECTS.length;
   CROPS.forEach((c, i) => {
     if (c.type !== type) return;
     const s = saved[c.name] || {};
-    const lv = s.lv || 1;
+    const lv = Math.min(maxSeed, s.lv || 1);
     const unlocked = isUnlocked(c);
     const lockedClass = unlocked ? "" : "locked";
     const yieldStr = formatYield(c.minYield, c.maxYield);
 
     let options = "";
-    for (let n = 1; n <= 7; n++) {
+    for (let n = 1; n <= maxSeed; n++) {
       options += `<option value="${n}" ${n === lv ? "selected" : ""}>${n}</option>`;
     }
 
@@ -288,7 +277,7 @@ function onUserLevelChange() {
   const input = document.getElementById("userLevel");
   let lv = Number(input.value) || 1;
   if (lv < 1) lv = 1;
-  if (lv > 75) lv = 75;
+  if (lv > 80) lv = 80;
   input.value = lv;
 
   saveSettings();
@@ -320,6 +309,10 @@ function calculate() {
   const yieldMode = getYieldMode();
   const results = [];
 
+  // レベル8使用チェック
+  let usingLevel8 = false;
+  if (wateringLv === 8) usingLevel8 = true;
+
   CROPS.forEach((c, i) => {
     if (!isUnlocked(c)) return;
 
@@ -327,6 +320,8 @@ function calculate() {
     if (!lvEl) return;
 
     const lv = Number(lvEl.value) || 1;
+    if (lv === 8) usingLevel8 = true;
+
     const seedTimeMult = getTimeMultiplier(lv);
     const adjustedBase = c.baseTime * seedTimeMult;
     const growthTime = Math.max(1, getEffectiveTime(adjustedBase, wateringLv));
@@ -338,7 +333,8 @@ function calculate() {
     const finalYield = baseYield + yieldBonus;
 
     const grossPrice = Math.round(c.basePrice * priceMult * finalYield);
-    const netPrice = grossPrice - (c.seedCost || 0);
+    const seedCost = Math.ceil(c.seedCost || 0);
+    const netPrice = grossPrice - seedCost;
     const perMin = netPrice / cycleTime;
     const perHour = perMin * 60;
 
@@ -353,6 +349,17 @@ function calculate() {
       perHour: Math.round(perHour)
     });
   });
+
+  // 警告表示
+  const warningEl = document.getElementById("level8Warning");
+  if (warningEl) {
+    if (usingLevel8) {
+      warningEl.textContent = "※ じょうろレベル8または種レベル8は効果が未確定のため、レベル7の効果で計算しています。";
+      warningEl.style.display = "block";
+    } else {
+      warningEl.style.display = "none";
+    }
+  }
 
   if (currentSort === "perMin") {
     results.sort((a, b) => b.perMin - a.perMin);
@@ -419,9 +426,9 @@ function importCSV(event) {
     lines.forEach(line => {
       const parts = line.split(",").map(s => s.trim());
       if (parts[0] === "userLevel") {
-        data.userLevel = Math.min(75, Math.max(1, Number(parts[1]) || 1));
+        data.userLevel = Math.min(80, Math.max(1, Number(parts[1]) || 1));
       } else if (parts[0] === "wateringCanLevel") {
-        data.wateringCanLevel = Math.min(7, Math.max(0, Number(parts[1]) || 0));
+        data.wateringCanLevel = Math.min(WATERING.length - 1, Math.max(0, Number(parts[1]) || 0));
       } else if (parts[0] === "idleTime") {
         data.idleTime = Number(parts[1]) || 0;
       } else if (parts[0] === "yieldMode") {
@@ -462,6 +469,7 @@ function resetAll() {
 }
 
 initGlobalSelects();
+renderNotes();
 loadSettings();
 calculate();
 </script>
