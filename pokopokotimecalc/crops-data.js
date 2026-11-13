@@ -33,8 +33,7 @@ const WATERING = [
   { duration: 15, extra: 1,   effect: "2秒に2秒減", speed: "2.00倍" },
   { duration: 20, extra: 1,   effect: "2秒に2秒減", speed: "2.00倍" },
   { duration: 25, extra: 4/3, effect: "3秒に4秒減", speed: "2.33倍" },
-  { duration: 30, extra: 0.5, effect: "4秒に2秒減", speed: "1.50倍" }
-  // ここに要素を追加するとじょうろレベルの上限が自動で上がります
+  { duration: 30, extra: 2,   effect: "2秒に4秒減", speed: "3.00倍" }
 ];
 
 const SEED_EFFECTS = [
@@ -45,8 +44,7 @@ const SEED_EFFECTS = [
   { timeMult: 0.8, priceMult: 1.4, yieldBonus: 0.25, timeText: "-20%",    priceText: "+40%",    yieldText: "なし" },
   { timeMult: 0.7, priceMult: 1.6, yieldBonus: 0.25, timeText: "-30%",    priceText: "+60%",    yieldText: "なし" },
   { timeMult: 0.5, priceMult: 2.0, yieldBonus: 2,    timeText: "-50%",    priceText: "+100%",   yieldText: "必ず+2" },
-  { timeMult: 0.5, priceMult: 2.0, yieldBonus: 2,    timeText: "-50%",    priceText: "+150%",   yieldText: "必ず+4" }
-  // ここに要素を追加すると種レベルの上限が自動で上がります
+  { timeMult: 0.4, priceMult: 2.5, yieldBonus: 4,    timeText: "-60%",    priceText: "+150%",   yieldText: "必ず+4" }
 ];
 
 // crops.html 表示用
