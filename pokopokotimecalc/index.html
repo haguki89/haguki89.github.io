@@ -23,8 +23,8 @@
 <div class="page-wrapper">
 
   <aside class="ad-side">
-    <a href="https://x.com/gnm_out" target="_blank" rel="noopener">
-      <img src="bosyu.png" alt="左広告">
+    <a href="https://x.com/Chaplin_vrc" target="_blank" rel="noopener">
+      <img src="ad-right.png" alt="左広告">
     </a>
     <a href="https://x.com/gnm_out" target="_blank" rel="noopener">
       <img src="bosyu.png" alt="左広告2">
@@ -34,6 +34,13 @@
     <h1>🌱 ぽこぽこファーム 時間効率計算</h1>
     <p style="text-align:center;color:#666;">ユーザーレベル・じょうろレベル・種レベルを選択／入力して時間効率を一覧化</p>
 
+    <nav style="text-align:center; margin:12px 0 20px; font-size:0.95em;">
+      <a href="https://mfre.jp/pokopokotimecalc/" style="margin:0 10px;">HOME</a>
+      <a href="https://mfre.jp/pokopokotimecalc/level-effects/" style="margin:0 10px;">レベル効果</a>
+      <a href="https://mfre.jp/pokopokotimecalc/crops/" style="margin:0 10px;">作物情報一覧</a>
+      <a href="https://mfre.jp/pokopokotimecalc/fishing/" style="margin:0 10px;">釣り</a>
+      <a href="https://mfre.jp/pokopokotimecalc/cooking/" style="margin:0 10px;">料理</a>
+    </nav>
     <div class="user-level-box">
       <div class="global-inputs">
         <label><strong>ユーザーレベル</strong>　
@@ -112,8 +119,8 @@
 
 
   <aside class="ad-side">
-    <a href="https://x.com/gnm_out" target="_blank" rel="noopener">
-      <img src="bosyu.png" alt="右広告">
+    <a href="https://x.com/RashaDeep_vrc" target="_blank" rel="noopener">
+      <img src="ad-left.png" alt="右広告">
     </a>
     <a href="https://x.com/gnm_out" target="_blank" rel="noopener">
       <img src="bosyu.png" alt="右広告2">
@@ -124,7 +131,7 @@
 
 <footer>
   <p>当サイトはファンメイドです。公式とは一切関係ありません。</p>
-  <p><a href="https://mfre.jp/pokopokotimecalc/crops">作物情報一覧</a> ｜ <a href="https://mfre.jp/pokopokotimecalc/contact">お問い合わせ</a></p>
+  <p><a href="https://mfre.jp/pokopokotimecalc/contact">お問い合わせ</a></p>
   <p>© 2026 ぽこぽこファーム 時間効率計算ツール / haguki</p>
 </footer>
 
@@ -316,9 +323,8 @@ function calculate() {
   const yieldMode = getYieldMode();
   const results = [];
 
-  // レベル8使用チェック
-  let usingLevel8 = false;
-  if (wateringLv === 8) usingLevel8 = true;
+  // 種レベル8使用チェック（じょうろレベル8は警告不要）
+  let usingSeedLevel8 = false;
 
   CROPS.forEach((c, i) => {
     if (!isUnlocked(c)) return;
@@ -327,7 +333,7 @@ function calculate() {
     if (!lvEl) return;
 
     const lv = Number(lvEl.value) || 1;
-    if (lv === 8) usingLevel8 = true;
+    if (lv === 8) usingSeedLevel8 = true;
 
     const seedTimeMult = getTimeMultiplier(lv);
     const adjustedBase = c.baseTime * seedTimeMult;
@@ -357,11 +363,11 @@ function calculate() {
     });
   });
 
-  // 警告表示
+  // 警告表示（種レベル8のみ）
   const warningEl = document.getElementById("level8Warning");
   if (warningEl) {
-    if (usingLevel8) {
-      warningEl.textContent = "※ じょうろレベル8または種レベル8は効果が未確定のため、レベル7の効果で計算しています。";
+    if (usingSeedLevel8) {
+      warningEl.textContent = "※ 種レベル8は効果が未確定のため、レベル7の効果で計算しています。";
       warningEl.style.display = "block";
     } else {
       warningEl.style.display = "none";
