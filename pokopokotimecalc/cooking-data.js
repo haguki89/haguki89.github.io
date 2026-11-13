@@ -78,7 +78,7 @@ const COOKING = [
   { method: "ジューサー", name: "メロンジュース", unlockLv: null, price: 1360, exp: null, time: 5, ingredients: "メロン×1", cost: 800 },
   { method: "ジューサー", name: "メロンソーダ", unlockLv: null, price: 1480, exp: null, time: 6, ingredients: "メロン×1、炭酸水×1、砂糖×1", cost: 870 },
   { method: "ジューサー", name: "クリームソーダ", unlockLv: null, price: 1665, exp: null, time: 6, ingredients: "メロン×1、さくらんぼ×1、炭酸水×1、砂糖×1、牛乳×1、生クリーム×1", cost: 980 },
-  { method: "ジューサー", name: "スターフルーツジュース", unlockLv: null, price: 765, exp: null, time: 5, ingredients: "スターフルーツ×1", cost: 150 },
+  { method: "ジューサー", name: "スターフルーツジュース", unlockLv: null, price: 765, exp: null, time: 5, ingredients: "スターフルーツ×3", cost: 450 },
   { method: "ジューサー", name: "パイナップルジュース", unlockLv: null, price: 680, exp: null, time: 5, ingredients: "パイナップル×1", cost: 400 },
   { method: "ジューサー", name: "レモンカッシュ", unlockLv: null, price: 880, exp: null, time: 5, ingredients: "レモン×1、炭酸水×1、砂糖×1", cost: 520 },
   { method: "ジューサー", name: "ぶどうジュース", unlockLv: null, price: 610, exp: null, time: 5, ingredients: "ぶどう×3", cost: 360 },
