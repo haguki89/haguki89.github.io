@@ -23,14 +23,18 @@
     text-align: left;
     border-bottom: 1px solid #eee;
     overflow-wrap: break-word;
-    word-break: break-all;
+    word-break: break-word;
+    white-space: normal;
   }
-  th:nth-child(1), td:nth-child(1) { width: 22%; } /* 料理名 */
-  th:nth-child(2), td:nth-child(2) { width: 10%; } /* 開放Lv */
-  th:nth-child(3), td:nth-child(3) { width: 10%; } /* 売値 */
-  th:nth-child(4), td:nth-child(4) { width: 10%; } /* 経験値 */
-  th:nth-child(5), td:nth-child(5) { width: 10%; } /* 調理(分) */
-  th:nth-child(6), td:nth-child(6) { width: 38%; } /* 主な材料 */
+  th:nth-child(1), td:nth-child(1) { width: 15%; } /* 料理名 */
+  th:nth-child(2), td:nth-child(2) { width: 7%; }  /* 開放Lv */
+  th:nth-child(3), td:nth-child(3) { width: 7%; }  /* 売値 */
+  th:nth-child(4), td:nth-child(4) { width: 7%; }  /* 経験値 */
+  th:nth-child(5), td:nth-child(5) { width: 7%; }  /* 調理(分) */
+  th:nth-child(6), td:nth-child(6) { width: 22%; } /* 材料 */
+  th:nth-child(7), td:nth-child(7) { width: 9%; }  /* コスト */
+  th:nth-child(8), td:nth-child(8) { width: 9%; }  /* 利益 */
+  th:nth-child(9), td:nth-child(9) { width: 9%; }  /* 利益率 */
 </style>
 </head>
 <body>
@@ -44,7 +48,7 @@
     <a href="https://mfre.jp/pokopokotimecalc/cooking" style="margin:0 10px;">料理</a>
   </nav>
 
-  <p class="note" style="text-align:center;">経験値は後々の経験値効率計算用に保持しています。現在「調査中」のものが多いです。</p>
+  <p class="note" style="text-align:center;">コストは作物の売値＋おつかい素材の仕入値＋魚の売値で計算しています（価格不明なものは「-」表示）。<br>利益＝売値−コスト、利益率＝利益÷コスト×100</p>
 
   <div id="cookingSections"></div>
 </div>
@@ -77,25 +81,73 @@ function renderCooking() {
             <th>売値</th>
             <th>経験値</th>
             <th>調理(分)</th>
-            <th>主な材料</th>
+            <th>材料</th>
+            <th>コスト</th>
+            <th>利益</th>
+            <th>利益率</th>
           </tr>
         </thead>
         <tbody>
-          ${recipes.map(r => `
-            <tr>
-              <td>${r.name}</td>
-              <td>${r.unlockLv ?? "調査中"}</td>
-              <td>${r.price.toLocaleString()}</td>
-              <td>${r.exp ?? "調査中"}</td>
-              <td>${r.time}</td>
-              <td>${r.ingredients}</td>
-            </tr>
-          `).join("")}
+          ${recipes.map(r => {
+            const profit = (r.cost != null) ? (r.price - r.cost) : null;
+            const rate = (profit != null && r.cost > 0) ? ((profit / r.cost) * 100).toFixed(1) : null;
+            return `
+              <tr>
+                <td>${r.name}</td>
+                <td>${r.unlockLv ?? "調査中"}</td>
+                <td>${r.price.toLocaleString()}</td>
+                <td>${r.exp ?? "調査中"}</td>
+                <td>${r.time}</td>
+                <td>${r.ingredients}</td>
+                <td>${r.cost != null ? r.cost.toLocaleString() : "-"}</td>
+                <td>${profit != null ? profit.toLocaleString() : "-"}</td>
+                <td>${rate != null ? rate + "%" : "-"}</td>
+              </tr>
+            `;
+          }).join("")}
         </tbody>
       </table>
     `;
     container.appendChild(section);
   });
+
+  // おつかい素材
+  const matSection = document.createElement("div");
+  matSection.className = "section";
+  matSection.innerHTML = `
+    <h2>おつかい素材</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>素材名</th>
+          <th>仕入値</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${MATERIALS.map(m => `
+          <tr>
+            <td>${m.name}</td>
+            <td>${m.cost}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+  container.appendChild(matSection);
 }
 
 renderCooking();
