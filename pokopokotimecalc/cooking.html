@@ -26,12 +26,14 @@
     word-break: break-word;
     white-space: normal;
   }
-  th:nth-child(1), td:nth-child(1) { width: 22%; } /* 料理名 */
+  th:nth-child(1), td:nth-child(1) { width: 20%; } /* 料理名 */
   th:nth-child(2), td:nth-child(2) { width: 10%; } /* 開放Lv */
   th:nth-child(3), td:nth-child(3) { width: 10%; } /* 売値 */
-  th:nth-child(4), td:nth-child(4) { width: 10%; } /* 経験値 */
-  th:nth-child(5), td:nth-child(5) { width: 10%; } /* 調理(分) */
-  th:nth-child(6), td:nth-child(6) { width: 38%; } /* 主な材料 */
+  th:nth-child(4), td:nth-child(4) { width: 12%; } /* 経験値(調理時) */
+  th:nth-child(5), td:nth-child(5) { width: 12%; } /* 経験値(食事時) */
+  th:nth-child(6), td:nth-child(6) { width: 10%; } /* 調理(分) */
+  th:nth-child(7), td:nth-child(7) { width: 26%; } /* 材料 */
+  /* th:nth-child(8), td:nth-child(8) { width: 9%; }  /* コスト */
 </style>
 </head>
 <body>
@@ -39,14 +41,13 @@
   <h1>🍳 料理情報一覧</h1>
   <nav style="text-align:center; margin:12px 0 20px; font-size:0.95em;">
     <a href="https://mfre.jp/pokopokotimecalc/" style="margin:0 10px;">HOME</a>
-    <a href="https://mfre.jp/pokopokotimecalc/EX" style="margin:0 10px;">経験値効率</a>
     <a href="https://mfre.jp/pokopokotimecalc/level-effects" style="margin:0 10px;">レベル効果</a>
     <a href="https://mfre.jp/pokopokotimecalc/crops" style="margin:0 10px;">作物情報一覧</a>
     <a href="https://mfre.jp/pokopokotimecalc/fishing" style="margin:0 10px;">釣り</a>
     <a href="https://mfre.jp/pokopokotimecalc/cooking" style="margin:0 10px;">料理</a>
   </nav>
 
-  <p class="note" style="text-align:center;">経験値は後々の経験値効率計算用に保持しています。現在「調査中」のものが多いです。</p>
+  <p class="note" style="text-align:center;">経験値は後々の経験値効率計算用に保持しています。現在「調査中」のものが多いです。<br>コストは作物の売値＋おつかい素材の仕入値＋魚の売値で計算しています。</p>
 
   <div id="cookingSections"></div>
 </div>
@@ -77,9 +78,11 @@ function renderCooking() {
             <th>料理名</th>
             <th>開放Lv</th>
             <th>売値</th>
-            <th>経験値</th>
+            <th>経験値(調理時)</th>
+            <th>経験値(食事時)</th>
             <th>調理(分)</th>
-            <th>主な材料</th>
+            <th>材料</th>
+            <!-- <th>コスト</th> -->
           </tr>
         </thead>
         <tbody>
@@ -88,9 +91,11 @@ function renderCooking() {
               <td>${r.name}</td>
               <td>${r.unlockLv ?? "調査中"}</td>
               <td>${r.price.toLocaleString()}</td>
-              <td>${r.exp ?? "調査中"}</td>
+              <td>${r.cookExp ?? "調査中"}</td>
+              <td>${r.mealExp ?? "調査中"}</td>
               <td>${r.time}</td>
               <td>${r.ingredients}</td>
+              <!-- <td>${r.cost != null ? r.cost.toLocaleString() : "-"}</td> -->
             </tr>
           `).join("")}
         </tbody>
@@ -98,6 +103,40 @@ function renderCooking() {
     `;
     container.appendChild(section);
   });
+
+  // おつかい素材
+  const matSection = document.createElement("div");
+  matSection.className = "section";
+  matSection.innerHTML = `
+    <h2>おつかい素材</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>素材名</th>
+          <th>仕入値</th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${MATERIALS.map(m => `
+          <tr>
+            <td>${m.name}</td>
+            <td>${m.cost}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+  container.appendChild(matSection);
 }
 
 renderCooking();
