@@ -9,22 +9,6 @@ const MATERIALS = [
   { name: "炭酸水", cost: 40 }
 ];
 
-const FISH = [
-  { name: "フナ", price: 3 },
-  { name: "ドジョウ", price: 5 },
-  { name: "コイ", price: 12 },
-  { name: "ナマズ", price: 20 },
-  { name: "ニジマス", price: 28 },
-  { name: "金色のコイ", price: 150 },
-  { name: "イトウ", price: 400 },
-  { name: "サケ", price: 50 },
-  { name: "マグロ", price: 6000 },
-  { name: "タイ", price: 5000 },
-  { name: "ブリ", price: 4500 },
-  { name: "ヒラメ", price: 4000 },
-  { name: "エビ", price: 30 }
-];
-
 const COOKING = [
   // なべ
   { method: "なべ", name: "にんじんスープ", unlockLv: 1, price: 15, cookExp: 3, mealExp: null, time: 2, ingredients: "にんじん×4", cost: 8 },
