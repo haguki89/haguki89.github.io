@@ -37,6 +37,7 @@
           <th>仕入値</th>
           <th>収穫数(最小)</th>
           <th>収穫数(最大)</th>
+          <th>経験値(収穫時)</th>
         </tr>
       </thead>
       <tbody id="cropTable"></tbody>
@@ -99,6 +100,7 @@ function renderCropTable() {
         <td>${c.seedCost}</td>
         <td>${c.minYield}</td>
         <td>${c.maxYield}</td>
+        <td>${c.harvestExp ?? "調査中"}</td>
       </tr>`;
   });
 }
