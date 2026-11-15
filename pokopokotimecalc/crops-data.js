@@ -16,7 +16,7 @@ const CROPS = [
   { name: "もも", unlockLv: 10, baseTime: 240, basePrice: 90, minYield: 2, maxYield: 3, seedCost: 0, type: "果樹園", harvestExp: null },
   { name: "さくらんぼ", unlockLv: 20, baseTime: 270, basePrice: 30, minYield: 8, maxYield: 10, seedCost: 0, type: "果樹園", harvestExp: null },
   { name: "みかん", unlockLv: 30, baseTime: 300, basePrice: 70, minYield: 4, maxYield: 5, seedCost: 0, type: "果樹園", harvestExp: null },
-  { name: "ぶどう", unlockLv: 40, baseTime: 300, basePrice: 120, minYield: 4, maxYield: 5, seedCost: 0, type: "果樹園", harvestExp: null },
+  { name: "ぶどう", unlockLv: 40, baseTime: 300, basePrice: 120, minYield: 4, maxYield: 5, seedCost: 0, type: "果樹園", harvestExp: 30 },
   { name: "スターフルーツ", unlockLv: 50, baseTime: 300, basePrice: 150, minYield: 4, maxYield: 5, seedCost: 0, type: "果樹園", harvestExp: null },
   { name: "パイナップル", unlockLv: 55, baseTime: 360, basePrice: 400, minYield: 2, maxYield: 3, seedCost: 0, type: "果樹園", harvestExp: null },
   { name: "レモン", unlockLv: 60, baseTime: 330, basePrice: 450, minYield: 2, maxYield: 3, seedCost: 0, type: "果樹園", harvestExp: 55 },
