@@ -12,14 +12,14 @@ const CROPS = [
   { name: "じゃがいも", unlockLv: 35, baseTime: 120, basePrice: 45, minYield: 4, maxYield: 6, seedCost: 33, type: "畑", harvestExp: 22 },
   { name: "さつまいも", unlockLv: 35, baseTime: 240, basePrice: 130, minYield: 3, maxYield: 4, seedCost: 72, type: "畑", harvestExp: 45 },
   { name: "メロン", unlockLv: 50, baseTime: 300, basePrice: 800, minYield: 1, maxYield: 1, seedCost: 100, type: "畑", harvestExp: 60 },
-  { name: "りんご", unlockLv: 8, baseTime: 360, basePrice: 40, minYield: 3, maxYield: 4, seedCost: 0, type: "果樹園", harvestExp: null },
+  { name: "りんご", unlockLv: 8, baseTime: 360, basePrice: 40, minYield: 3, maxYield: 4, seedCost: 0, type: "果樹園", harvestExp: 10 },
   { name: "もも", unlockLv: 10, baseTime: 240, basePrice: 90, minYield: 2, maxYield: 3, seedCost: 0, type: "果樹園", harvestExp: null },
   { name: "さくらんぼ", unlockLv: 20, baseTime: 270, basePrice: 30, minYield: 8, maxYield: 10, seedCost: 0, type: "果樹園", harvestExp: null },
   { name: "みかん", unlockLv: 30, baseTime: 300, basePrice: 70, minYield: 4, maxYield: 5, seedCost: 0, type: "果樹園", harvestExp: null },
   { name: "ぶどう", unlockLv: 40, baseTime: 300, basePrice: 120, minYield: 4, maxYield: 5, seedCost: 0, type: "果樹園", harvestExp: null },
   { name: "スターフルーツ", unlockLv: 50, baseTime: 300, basePrice: 150, minYield: 4, maxYield: 5, seedCost: 0, type: "果樹園", harvestExp: null },
   { name: "パイナップル", unlockLv: 55, baseTime: 360, basePrice: 400, minYield: 2, maxYield: 3, seedCost: 0, type: "果樹園", harvestExp: null },
-  { name: "レモン", unlockLv: 60, baseTime: 330, basePrice: 450, minYield: 2, maxYield: 3, seedCost: 0, type: "果樹園", harvestExp: null },
+  { name: "レモン", unlockLv: 60, baseTime: 330, basePrice: 450, minYield: 2, maxYield: 3, seedCost: 0, type: "果樹園", harvestExp: 55 },
   { name: "マスカット", unlockLv: 65, baseTime: 360, basePrice: 560, minYield: 2, maxYield: 3, seedCost: 0, type: "果樹園", harvestExp: null }
 ];
 
@@ -38,10 +38,10 @@ const WATERING = [
 const SEED_EFFECTS = [
   { timeMult: 1.0, priceMult: 1.0, yieldBonus: 0,    timeText: "効果なし", priceText: "効果なし", yieldText: "なし" },
   { timeMult: 0.9, priceMult: 1.0, yieldBonus: 0,    timeText: "-10%",    priceText: "効果なし", yieldText: "なし" },
-  { timeMult: 0.9, priceMult: 1.2, yieldBonus: 0,    timeText: "効果なし", priceText: "+20%",    yieldText: "なし" },
-  { timeMult: 0.9, priceMult: 1.2, yieldBonus: 0.25, timeText: "効果なし", priceText: "効果なし", yieldText: "25%の確率で+1（期待値+0.25）" },
-  { timeMult: 0.8, priceMult: 1.4, yieldBonus: 0.25, timeText: "-20%",    priceText: "+40%",    yieldText: "なし" },
-  { timeMult: 0.7, priceMult: 1.6, yieldBonus: 0.25, timeText: "-30%",    priceText: "+60%",    yieldText: "なし" },
+  { timeMult: 0.9, priceMult: 1.2, yieldBonus: 0,    timeText: "-10%", priceText: "+20%",    yieldText: "なし" },
+  { timeMult: 0.9, priceMult: 1.2, yieldBonus: 0.25, timeText: "-10%", priceText: "+20%", yieldText: "25%の確率で+1（期待値+0.25）" },
+  { timeMult: 0.8, priceMult: 1.4, yieldBonus: 0.25, timeText: "-20%",    priceText: "+40%",    yieldText: "25%の確率で+1（期待値+0.25）" },
+  { timeMult: 0.7, priceMult: 1.6, yieldBonus: 0.25, timeText: "-30%",    priceText: "+60%",    yieldText: "25%の確率で+1（期待値+0.25）" },
   { timeMult: 0.5, priceMult: 2.0, yieldBonus: 2,    timeText: "-50%",    priceText: "+100%",   yieldText: "必ず+2" },
   { timeMult: 0.4, priceMult: 2.5, yieldBonus: 4,    timeText: "-60%",    priceText: "+150%",   yieldText: "必ず+4" }
 ];
