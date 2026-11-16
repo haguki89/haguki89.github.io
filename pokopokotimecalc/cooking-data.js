@@ -66,7 +66,7 @@ const COOKING = [
   { method: "ジューサー", name: "パイナップルジュース", unlockLv: null, price: 680, cookExp: 68, mealExp: 68, time: 5, ingredients: "パイナップル×1", cost: 400 },
   { method: "ジューサー", name: "レモンカッシュ", unlockLv: null, price: 880, cookExp: 110, mealExp: 110, time: 5, ingredients: "レモン×1、炭酸水×1、砂糖×1", cost: 520 },
   { method: "ジューサー", name: "ぶどうジュース", unlockLv: null, price: 610, cookExp: 61, mealExp: 61, time: 5, ingredients: "ぶどう×3", cost: 360 },
-  { method: "ジューサー", name: "マスカットジュース", unlockLv: null, price: 950, cookExp: null, mealExp: null, time: 5, ingredients: "マスカット×1", cost: 560 },
+  { method: "ジューサー", name: "マスカットジュース", unlockLv: null, price: 950, cookExp: 95, mealExp: 95, time: 5, ingredients: "マスカット×1", cost: 560 },
 
   // オーブン
   { method: "オーブン", name: "いちごのケーキ", unlockLv: 25, price: 640, cookExp: 64, mealExp: 64, time: 20, ingredients: "いちご×3、小麦×3、卵×1、砂糖×1、生クリーム×1", cost: 333 },
@@ -77,7 +77,7 @@ const COOKING = [
   { method: "オーブン", name: "スターフルーツのチーズケーキ", unlockLv: 50, price: 1075, cookExp: 107, mealExp: 107, time: 20, ingredients: "スターフルーツ×1、小麦×1、生クリーム×1、牛乳×1、砂糖×1", cost: 266 },
   { method: "オーブン", name: "パイナップルのケーキ", unlockLv: 55, price: 1145, cookExp: 114, mealExp: 114, time: 20, ingredients: "パイナップル×1、さくらんぼ×3、小麦×3、卵×1、砂糖×1", cost: 563 },
   { method: "オーブン", name: "ぶどうのムース", unlockLv: 40, price: 905, cookExp: 90, mealExp: 90, time: 20, ingredients: "ぶどう×3、小麦×1、生クリーム×1、牛乳×1、砂糖×1", cost: 476 },
-  { method: "オーブン", name: "マスカットのタルト", unlockLv: 65, price: 2390, cookExp: null, mealExp: null, time: 20, ingredients: "マスカット×2、小麦×2、バター×1、卵×1、牛乳×1、砂糖×1", cost: 1257 },
+  { method: "オーブン", name: "マスカットのタルト", unlockLv: 65, price: 2390, cookExp: 239, mealExp: 239, time: 20, ingredients: "マスカット×2、小麦×2、バター×1、卵×1、牛乳×1、砂糖×1", cost: 1257 },
 
   // すいはん
   { method: "すいはん", name: "おにぎり", unlockLv: 20, price: 205, cookExp: 20, mealExp: 20, time: 8, ingredients: "お米×1、塩×1", cost: 120 },
