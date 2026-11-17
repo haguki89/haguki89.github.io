@@ -20,7 +20,7 @@ const CROPS = [
   { name: "スターフルーツ", unlockLv: 50, baseTime: 300, basePrice: 150, minYield: 4, maxYield: 5, seedCost: 0, type: "果樹園", harvestExp: 35 },
   { name: "パイナップル", unlockLv: 55, baseTime: 360, basePrice: 400, minYield: 2, maxYield: 3, seedCost: 0, type: "果樹園", harvestExp: 50 },
   { name: "レモン", unlockLv: 60, baseTime: 330, basePrice: 450, minYield: 2, maxYield: 3, seedCost: 0, type: "果樹園", harvestExp: 55 },
-  { name: "マスカット", unlockLv: 65, baseTime: 360, basePrice: 560, minYield: 2, maxYield: 3, seedCost: 0, type: "果樹園", harvestExp: null }
+  { name: "マスカット", unlockLv: 65, baseTime: 360, basePrice: 560, minYield: 2, maxYield: 3, seedCost: 0, type: "果樹園", harvestExp: 65 }
 ];
 
 const WATERING = [
