@@ -9,20 +9,20 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ぽこぽこファーム 効率計算</title>
+<title>ぽこぽこファーム 時間効率計算</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
 
 <!-- OGP / Twitter Card -->
-<meta property="og:title" content="ぽこぽこファーム 効率計算">
-<meta property="og:description" content="ユーザーレベル・じょうろレベル・種レベルを設定して作物の時間効率を計算できる">
+<meta property="og:title" content="ぽこぽこファーム 時間効率計算">
+<meta property="og:description" content="ユーザーレベル・じょうろレベル・種レベルを設定して作物の時間効率を計算できるファンメイドツール">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://mfre.jp/pokopokotimecalc/">
 <meta property="og:image" content="https://mfre.jp/pokopokotimecalc/banner.png">
-<meta property="og:site_name" content="ぽこぽこファーム 効率計算">
+<meta property="og:site_name" content="ぽこぽこファーム 時間効率計算">
 
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ぽこぽこファーム 効率計算">
-<meta name="twitter:description" content="ユーザーレベル・じょうろレベル・種レベルを設定して作物の時間効率を計算できる">
+<meta name="twitter:title" content="ぽこぽこファーム 時間効率計算">
+<meta name="twitter:description" content="ユーザーレベル・じょうろレベル・種レベルを設定して作物の時間効率を計算できるファンメイドツール">
 <meta name="twitter:image" content="https://mfre.jp/pokopokotimecalc/banner.png">
 
 <link rel="stylesheet" href="style.css">
@@ -39,15 +39,16 @@
     </a>
   </aside>
   <div class="container">
-    <h1>🌱 ぽこぽこファーム 効率計算</h1>
+    <h1>🌱 ぽこぽこファーム 時間効率計算</h1>
     <p style="text-align:center;color:#666;">ユーザーレベル・じょうろレベル・種レベルを選択／入力して時間効率を一覧化</p>
 
     <nav style="text-align:center; margin:12px 0 20px; font-size:0.95em;">
       <a href="https://mfre.jp/pokopokotimecalc/" style="margin:0 10px;">HOME</a>
+      <a href="https://mfre.jp/pokopokotimecalc/EX" style="margin:0 10px;">経験値効率</a>
       <a href="https://mfre.jp/pokopokotimecalc/level-effects" style="margin:0 10px;">レベル効果</a>
       <a href="https://mfre.jp/pokopokotimecalc/crops" style="margin:0 10px;">作物情報一覧</a>
-      <a href="https://mfre.jp/pokopokotimecalc/fishing" style="margin:0 10px;">釣り情報一覧</a>
-      <a href="https://mfre.jp/pokopokotimecalc/cooking" style="margin:0 10px;">料理情報一覧</a>
+      <a href="https://mfre.jp/pokopokotimecalc/fishing" style="margin:0 10px;">釣り</a>
+      <a href="https://mfre.jp/pokopokotimecalc/cooking" style="margin:0 10px;">料理</a>
     </nav>
     <div class="user-level-box">
       <div class="global-inputs">
@@ -79,6 +80,21 @@
     <div class="section">
       <h2>果樹園</h2>
       <div class="crop-grid" id="orchardInputs"></div>
+    </div>
+
+    <!-- 収穫までの残り時間 -->
+    <div class="section">
+      <h2>収穫までの残り時間</h2>
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:8px;">
+        <label>
+          <strong>残り時間</strong>
+          <input type="text" id="remainingTime" placeholder="90 または 1:30" style="width:100px; margin-left:6px;" onchange="calcRemainingTime()">
+        </label>
+        <button onclick="calcRemainingTime()">計算</button>
+      </div>
+      <div id="wateringEffectDisplay" style="margin:6px 0; color:#555; font-size:0.95em;"></div>
+      <div id="remainingResult" style="font-size:1.1em; font-weight:bold; color:#2e7d32;"></div>
+      <p class="note" style="margin-top:8px;">※ 現在のじょうろレベル効果を「今から適用」した場合の残り時間です。</p>
     </div>
 
     <div class="ranking-header">
@@ -125,10 +141,7 @@
       </thead>
       <tbody></tbody>
     </table>
-    <p class="note">※1 放置時間を設定すると、成長時間がそれより短い作物は「放置時間に1回収穫」として計算します。<br>
-    ※2 種Lv4は25%で+1（期待値）、種Lv7は必ず+2を収穫数に加算しています。<br>
-    ※3 「純利益」は売値から種の仕入れ値を差し引いた値です。<br>
-    ※4 「経験値」は収穫1回あたりの固定値です（種Lvや収穫数の影響を受けません）。</p>
+    <p class="note">※1 放置時間を設定すると、成長時間がそれより短い作物は「放置時間に1回収穫」として計算します。<br>※2 種Lv4は25%で+1（期待値）、種Lv7は必ず+2を収穫数に加算しています。<br>※3 「純利益」は売値から種の仕入れ値を差し引いた値です。ヘッダーの⇅をクリックでソート切り替え。<br>※4 「経験値」は収穫1回あたりの固定値です（種Lvや収穫数の影響を受けません）。経験値効率もコインと同じく放置時間を考慮したサイクル時間で計算しています。</p>
   </div>
 
 
@@ -434,6 +447,7 @@ function calculate() {
     tbody.innerHTML = '<tr><td colspan="12">開放済みの作物がありません</td></tr>';
   }
   saveSettings();
+  updateWateringEffectDisplay();
 }
 
 function exportCSV() {
@@ -511,10 +525,60 @@ function resetAll() {
   }
 }
 
+// ===== 収穫までの残り時間 =====
+function parseRemainingTime(str) {
+  if (!str) return 0;
+  str = str.trim();
+  if (str.includes(":")) {
+    const parts = str.split(":");
+    const h = Number(parts[0]) || 0;
+    const m = Number(parts[1]) || 0;
+    return h * 60 + m;
+  }
+  return Number(str) || 0;
+}
+
+function formatMinutes(min) {
+  if (min < 60) return min.toFixed(1) + "分";
+  const h = Math.floor(min / 60);
+  const m = Math.round(min % 60);
+  return `${h}時間${m}分`;
+}
+
+function updateWateringEffectDisplay() {
+  const lv = getWateringCanLevel();
+  const el = document.getElementById("wateringEffectDisplay");
+  if (!el) return;
+  if (lv < 1) {
+    el.textContent = "じょうろレベル: 未開放（効果なし）";
+    return;
+  }
+  const w = WATERING[Math.min(lv, WATERING.length - 1)];
+  el.textContent = `じょうろレベル: ${lv}　効果: ${w.effect}（${w.speed}、効果時間${w.duration}分）`;
+}
+
+function calcRemainingTime() {
+  const input = document.getElementById("remainingTime").value;
+  const baseRem = parseRemainingTime(input);
+  const waterLv = getWateringCanLevel();
+  const effective = getEffectiveTime(baseRem, waterLv);
+
+  const resultEl = document.getElementById("remainingResult");
+  if (!resultEl) return;
+
+  if (baseRem <= 0) {
+    resultEl.textContent = "残り時間を入力してください";
+    return;
+  }
+
+  resultEl.textContent = `収穫までの残り時間: ${formatMinutes(effective)}（元の残り時間: ${formatMinutes(baseRem)}）`;
+}
+
 initGlobalSelects();
 renderNotes();
 loadSettings();
 calculate();
+updateWateringEffectDisplay();
 </script>
 </body>
 </html>
