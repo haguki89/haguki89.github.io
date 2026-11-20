@@ -9,7 +9,7 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ぽこぽこファーム 料理情報</title>
+<title>ぽこぽこファーム 料理情報一覧</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
 <link rel="stylesheet" href="style.css">
 <style>
@@ -26,14 +26,50 @@
     word-break: break-word;
     white-space: normal;
   }
-  th:nth-child(1), td:nth-child(1) { width: 20%; } /* 料理名 */
-  th:nth-child(2), td:nth-child(2) { width: 10%; } /* 開放Lv */
-  th:nth-child(3), td:nth-child(3) { width: 10%; } /* 売値 */
-  th:nth-child(4), td:nth-child(4) { width: 12%; } /* 経験値(調理時) */
-  th:nth-child(5), td:nth-child(5) { width: 12%; } /* 経験値(食事時) */
-  th:nth-child(6), td:nth-child(6) { width: 10%; } /* 調理(分) */
-  th:nth-child(7), td:nth-child(7) { width: 26%; } /* 材料 */
-  /* th:nth-child(8), td:nth-child(8) { width: 9%; }  /* コスト */
+  th:nth-child(1), td:nth-child(1) { width: 16%; }
+  th:nth-child(2), td:nth-child(2) { width: 10%; }
+  th:nth-child(3), td:nth-child(3) { width: 8%; }
+  th:nth-child(4), td:nth-child(4) { width: 9%; }
+  th:nth-child(5), td:nth-child(5) { width: 11%; }
+  th:nth-child(6), td:nth-child(6) { width: 11%; }
+  th:nth-child(7), td:nth-child(7) { width: 9%; }
+  th:nth-child(8), td:nth-child(8) { width: 26%; }
+
+  .sort-header {
+    cursor: pointer;
+    user-select: none;
+  }
+  .sort-header:hover {
+    background-color: #f5f5f5;
+  }
+  .sort-active {
+    background-color: #e8f5e9;
+  }
+  .material {
+    color: #d32f2f;
+    font-weight: bold;
+  }
+  .filter-box {
+    background: #f9f9f9;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+  }
+  .filter-box label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95em;
+  }
+  .filter-box select, .filter-box input {
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
 </style>
 </head>
 <body>
@@ -41,14 +77,36 @@
   <h1>🍳 料理情報一覧</h1>
   <nav style="text-align:center; margin:12px 0 20px; font-size:0.95em;">
     <a href="https://mfre.jp/pokopokotimecalc/" style="margin:0 10px;">HOME</a>
-    <a href="https://mfre.jp/pokopokotimecalc/EX" style="margin:0 10px;">経験値効率</a>
     <a href="https://mfre.jp/pokopokotimecalc/level-effects" style="margin:0 10px;">レベル効果</a>
     <a href="https://mfre.jp/pokopokotimecalc/crops" style="margin:0 10px;">作物情報一覧</a>
-    <a href="https://mfre.jp/pokopokotimecalc/fishing" style="margin:0 10px;">釣り</a>
-    <a href="https://mfre.jp/pokopokotimecalc/cooking" style="margin:0 10px;">料理</a>
+    <a href="https://mfre.jp/pokopokotimecalc/fishing" style="margin:0 10px;">釣り情報一覧</a>
+    <a href="https://mfre.jp/pokopokotimecalc/cooking" style="margin:0 10px;">料理情報一覧</a>
   </nav>
 
   <p class="note" style="text-align:center;">経験値は後々の経験値効率計算用に保持しています。現在「調査中」のものが多いです。<br>コストは作物の売値＋おつかい素材の仕入値＋魚の売値で計算しています。</p>
+
+  <div class="filter-box">
+    <label>
+      <strong>調理器具</strong>
+      <select id="filterMethod" onchange="renderCooking()">
+        <option value="">すべて</option>
+      </select>
+    </label>
+    <label>
+      <strong>おつかい素材</strong>
+      <select id="filterMaterial" onchange="renderCooking()">
+        <option value="">すべて</option>
+        <option value="yes">あり</option>
+        <option value="no">なし</option>
+      </select>
+    </label>
+    <label>
+      <strong>ユーザーレベル</strong>
+      <input type="number" id="filterLevel" min="1" max="80" placeholder="空欄で全表示" onchange="renderCooking()" style="width:80px;">
+      <small>（以下で開放済みのみ）</small>
+    </label>
+    <button onclick="resetFilters()" style="padding:4px 12px;">フィルターリセット</button>
+  </div>
 
   <div id="cookingSections"></div>
 </div>
@@ -61,60 +119,159 @@
 
 <script src="cooking-data.js"></script>
 <script>
+let currentSort = { key: null, asc: true };
+
+const MATERIAL_NAMES = new Set(MATERIALS.map(m => m.name));
+
+function hasMaterial(ingredients) {
+  if (!ingredients) return false;
+  return ingredients.split("、").some(part => {
+    const match = part.match(/^(.+?)×/);
+    return match && MATERIAL_NAMES.has(match[1]);
+  });
+}
+
+function highlightIngredients(ingredients) {
+  if (!ingredients) return "";
+  return ingredients.split("、").map(part => {
+    const match = part.match(/^(.+?)×/);
+    if (match && MATERIAL_NAMES.has(match[1])) {
+      return `<span class="material">${match[1]}</span>${part.slice(match[1].length)}`;
+    }
+    return part;
+  }).join("、");
+}
+
+function sortRecipes(recipes) {
+  if (!currentSort.key) return recipes;
+  const { key, asc } = currentSort;
+  return [...recipes].sort((a, b) => {
+    let va = a[key];
+    let vb = b[key];
+    if (va == null) va = -Infinity;
+    if (vb == null) vb = -Infinity;
+    if (typeof va === "string") {
+      return asc ? va.localeCompare(vb, "ja") : vb.localeCompare(va, "ja");
+    }
+    return asc ? va - vb : vb - va;
+  });
+}
+
+function updateSortMarks() {
+  document.querySelectorAll(".sort-header").forEach(th => {
+    th.classList.remove("sort-active");
+    const mark = th.querySelector(".sort-mark");
+    if (th.dataset.sort === currentSort.key) {
+      th.classList.add("sort-active");
+      if (mark) mark.textContent = currentSort.asc ? "↑" : "↓";
+    } else if (mark) {
+      mark.textContent = "⇅";
+    }
+  });
+}
+
+function setSort(key) {
+  if (currentSort.key === key) {
+    currentSort.asc = !currentSort.asc;
+  } else {
+    currentSort.key = key;
+    currentSort.asc = true;
+  }
+  renderCooking();
+}
+
+function resetFilters() {
+  document.getElementById("filterMethod").value = "";
+  document.getElementById("filterMaterial").value = "";
+  document.getElementById("filterLevel").value = "";
+  renderCooking();
+}
+
+function initFilters() {
+  const methods = [...new Set(COOKING.map(c => c.method))].sort();
+  const select = document.getElementById("filterMethod");
+  methods.forEach(m => {
+    const opt = document.createElement("option");
+    opt.value = m;
+    opt.textContent = m;
+    select.appendChild(opt);
+  });
+}
+
 function renderCooking() {
   const container = document.getElementById("cookingSections");
   container.innerHTML = "";
 
-  const methods = [...new Set(COOKING.map(c => c.method))];
+  const methodFilter = document.getElementById("filterMethod").value;
+  const materialFilter = document.getElementById("filterMaterial").value;
+  const levelInput = document.getElementById("filterLevel").value;
+  const userLevel = levelInput ? Number(levelInput) : null;
 
-  methods.forEach(method => {
-    const recipes = COOKING.filter(c => c.method === method);
-    const section = document.createElement("div");
-    section.className = "section";
-    section.innerHTML = `
-      <h2>${method}</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>料理名</th>
-            <th>開放Lv</th>
-            <th>売値</th>
-            <th>経験値(調理時)</th>
-            <th>経験値(食事時)</th>
-            <th>調理(分)</th>
-            <th>材料</th>
-            <!-- <th>コスト</th> -->
-          </tr>
-        </thead>
-        <tbody>
-          ${recipes.map(r => `
-            <tr>
-              <td>${r.name}</td>
-              <td>${r.unlockLv ?? "調査中"}</td>
-              <td>${r.price.toLocaleString()}</td>
-              <td>${r.cookExp ?? "調査中"}</td>
-              <td>${r.mealExp ?? "調査中"}</td>
-              <td>${r.time}</td>
-              <td>${r.ingredients}</td>
-              <!-- <td>${r.cost != null ? r.cost.toLocaleString() : "-"}</td> -->
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-    `;
-    container.appendChild(section);
+  let filtered = COOKING.filter(r => {
+    // 調理器具フィルター
+    if (methodFilter && r.method !== methodFilter) return false;
+
+    // おつかい素材フィルター
+    const hasMat = hasMaterial(r.ingredients);
+    if (materialFilter === "yes" && !hasMat) return false;
+    if (materialFilter === "no" && hasMat) return false;
+
+    // 解放レベルフィルター（調査中は表示する）
+    if (userLevel !== null) {
+      if (r.unlockLv != null && r.unlockLv > userLevel) return false;
+    }
+
+    return true;
   });
 
-  // おつかい素材
+  const sorted = sortRecipes(filtered);
+
+  const section = document.createElement("div");
+  section.className = "section";
+  section.innerHTML = `
+    <h2>料理一覧 <small style="font-weight:normal;color:#666;">(${sorted.length}件)</small></h2>
+    <table>
+      <thead>
+        <tr>
+          <th>料理名</th>
+          <th>調理器具</th>
+          <th>開放Lv</th>
+          <th class="sort-header" data-sort="price" onclick="setSort('price')">売値<span class="sort-mark">⇅</span></th>
+          <th class="sort-header" data-sort="cookExp" onclick="setSort('cookExp')">経験値(調理時)<span class="sort-mark">⇅</span></th>
+          <th class="sort-header" data-sort="mealExp" onclick="setSort('mealExp')">経験値(食事時)<span class="sort-mark">⇅</span></th>
+          <th class="sort-header" data-sort="time" onclick="setSort('time')">調理(分)<span class="sort-mark">⇅</span></th>
+          <th>材料</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sorted.length === 0 ? `<tr><td colspan="8" style="text-align:center;color:#999;">該当する料理がありません</td></tr>` : sorted.map(r => `
+          <tr>
+            <td>${r.name}</td>
+            <td>${r.method}</td>
+            <td>${r.unlockLv ?? "調査中"}</td>
+            <td>${r.price.toLocaleString()}</td>
+            <td>${r.cookExp ?? "調査中"}</td>
+            <td>${r.mealExp ?? "調査中"}</td>
+            <td>${r.time}</td>
+            <td>${highlightIngredients(r.ingredients)}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+  container.appendChild(section);
+
+  // おつかい素材一覧
   const matSection = document.createElement("div");
   matSection.className = "section";
   matSection.innerHTML = `
-    <h2>おつかい素材</h2>
+    <h2>おつかい素材一覧</h2>
     <table>
       <thead>
         <tr>
           <th>素材名</th>
           <th>仕入値</th>
+          <th></th>
           <th></th>
           <th></th>
           <th></th>
@@ -132,14 +289,18 @@ function renderCooking() {
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
           </tr>
         `).join("")}
       </tbody>
     </table>
   `;
   container.appendChild(matSection);
+
+  updateSortMarks();
 }
 
+initFilters();
 renderCooking();
 </script>
 </body>

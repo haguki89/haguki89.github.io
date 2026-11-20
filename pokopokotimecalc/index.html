@@ -9,7 +9,7 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ぽこぽこファーム 時間効率計算</title>
+<title>ぽこぽこファーム 効率計算</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
 
 <!-- OGP / Twitter Card -->
@@ -39,16 +39,15 @@
     </a>
   </aside>
   <div class="container">
-    <h1>🌱 ぽこぽこファーム 時間効率計算</h1>
+    <h1>🌱 ぽこぽこファーム 効率計算</h1>
     <p style="text-align:center;color:#666;">ユーザーレベル・じょうろレベル・種レベルを選択／入力して時間効率を一覧化</p>
 
     <nav style="text-align:center; margin:12px 0 20px; font-size:0.95em;">
       <a href="https://mfre.jp/pokopokotimecalc/" style="margin:0 10px;">HOME</a>
-      <a href="https://mfre.jp/pokopokotimecalc/EX" style="margin:0 10px;">経験値効率</a>
       <a href="https://mfre.jp/pokopokotimecalc/level-effects" style="margin:0 10px;">レベル効果</a>
       <a href="https://mfre.jp/pokopokotimecalc/crops" style="margin:0 10px;">作物情報一覧</a>
-      <a href="https://mfre.jp/pokopokotimecalc/fishing" style="margin:0 10px;">釣り</a>
-      <a href="https://mfre.jp/pokopokotimecalc/cooking" style="margin:0 10px;">料理</a>
+      <a href="https://mfre.jp/pokopokotimecalc/fishing" style="margin:0 10px;">釣り情報一覧</a>
+      <a href="https://mfre.jp/pokopokotimecalc/cooking" style="margin:0 10px;">料理情報一覧</a>
     </nav>
     <div class="user-level-box">
       <div class="global-inputs">
@@ -69,6 +68,7 @@
         </label>
       </div>
       <p class="note" id="mainNotes"></p>
+      <p id="level8Warning" class="note" style="display:none;color:#d32f2f;"></p>
     </div>
 
     <div class="section">
@@ -118,11 +118,17 @@
           <th class="sort-header" data-sort="price" onclick="setSort('price')">純利益<span class="sort-mark">⇅</span></th>
           <th class="sort-header" data-sort="perMin" onclick="setSort('perMin')">コイン/分<span class="sort-mark">⇅</span></th>
           <th class="sort-header" data-sort="perHour" onclick="setSort('perHour')">コイン/時<span class="sort-mark">⇅</span></th>
+          <th class="sort-header" data-sort="exp" onclick="setSort('exp')">経験値<span class="sort-mark">⇅</span></th>
+          <th class="sort-header" data-sort="expPerMin" onclick="setSort('expPerMin')">経験値/分<span class="sort-mark">⇅</span></th>
+          <th class="sort-header" data-sort="expPerHour" onclick="setSort('expPerHour')">経験値/時<span class="sort-mark">⇅</span></th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
-    <p class="note">※1 放置時間を設定すると、成長時間がそれより短い作物は「放置時間に1回収穫」として計算します。<br>※2 種Lv4は25%で+1（期待値）、種Lv7は必ず+2を収穫数に加算しています。<br>※3 「純利益」は売値から種の仕入れ値を差し引いた値です。ヘッダーの⇅をクリックでソート切り替え。</p>
+    <p class="note">※1 放置時間を設定すると、成長時間がそれより短い作物は「放置時間に1回収穫」として計算します。<br>
+    ※2 種Lv4は25%で+1（期待値）、種Lv7は必ず+2を収穫数に加算しています。<br>
+    ※3 「純利益」は売値から種の仕入れ値を差し引いた値です。<br>
+    ※4 「経験値」は収穫1回あたりの固定値です（種Lvや収穫数の影響を受けません）。</p>
   </div>
 
 
@@ -359,6 +365,10 @@ function calculate() {
     const perMin = netPrice / cycleTime;
     const perHour = perMin * 60;
 
+    const harvestExp = c.harvestExp || 0;
+    const expPerMin = harvestExp / cycleTime;
+    const expPerHour = expPerMin * 60;
+
     results.push({
       name: c.name,
       type: c.type,
@@ -367,7 +377,10 @@ function calculate() {
       yieldValue: finalYield % 1 === 0 ? finalYield : finalYield.toFixed(2),
       price: netPrice,
       perMin: Number(perMin.toFixed(2)),
-      perHour: Math.round(perHour)
+      perHour: Math.round(perHour),
+      exp: harvestExp,
+      expPerMin: Number(expPerMin.toFixed(3)),
+      expPerHour: Math.round(expPerHour)
     });
   });
 
@@ -386,6 +399,12 @@ function calculate() {
     results.sort((a, b) => b.perMin - a.perMin);
   } else if (currentSort === "perHour") {
     results.sort((a, b) => b.perHour - a.perHour);
+  } else if (currentSort === "exp") {
+    results.sort((a, b) => b.exp - a.exp);
+  } else if (currentSort === "expPerMin") {
+    results.sort((a, b) => b.expPerMin - a.expPerMin);
+  } else if (currentSort === "expPerHour") {
+    results.sort((a, b) => b.expPerHour - a.expPerHour);
   } else {
     results.sort((a, b) => b.price - a.price);
   }
@@ -405,11 +424,14 @@ function calculate() {
         <td>${r.price.toLocaleString()}</td>
         <td class="${r.perMin > 5 ? "high" : ""}">${r.perMin}</td>
         <td class="${r.perHour > 300 ? "high" : ""}">${r.perHour.toLocaleString()}</td>
+        <td>${r.exp}</td>
+        <td class="${r.expPerMin > 0.5 ? "high" : ""}">${r.expPerMin}</td>
+        <td class="${r.expPerHour > 30 ? "high" : ""}">${r.expPerHour.toLocaleString()}</td>
       </tr>`;
   });
 
   if (results.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="9">開放済みの作物がありません</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="12">開放済みの作物がありません</td></tr>';
   }
   saveSettings();
 }
