@@ -11,5 +11,5 @@ const FISH = [
   { name: "タイ", price: 5000, fishingex: 220, probLv5: 0.12, probLv7: 0.30 },
   { name: "ヒラメ", price: 4000, fishingex: 180, probLv5: 0.09, probLv7: 0.28 },
   { name: "マグロ", price: 6000, fishingex: 250, probLv5: 0.06, probLv7: 0.25 },
-  { name: "ブリ", price: 4500, fishingex: null, probLv5: 0.08, probLv7: 0.22 }
+  { name: "ブリ", price: 4500, fishingex: 200, probLv5: 0.08, probLv7: 0.22 }
 ];
