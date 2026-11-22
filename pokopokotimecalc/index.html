@@ -68,7 +68,6 @@
         </label>
       </div>
       <p class="note" id="mainNotes"></p>
-      <p id="level8Warning" class="note" style="display:none;color:#d32f2f;"></p>
     </div>
 
     <div class="section">
@@ -353,9 +352,6 @@ function calculate() {
   const yieldMode = getYieldMode();
   const results = [];
 
-  // 種レベル8使用チェック（じょうろレベル8は警告不要）
-  let usingSeedLevel8 = false;
-
   CROPS.forEach((c, i) => {
     if (!isUnlocked(c)) return;
 
@@ -363,7 +359,6 @@ function calculate() {
     if (!lvEl) return;
 
     const lv = Number(lvEl.value) || 1;
-    if (lv === 8) usingSeedLevel8 = true;
 
     const seedTimeMult = getTimeMultiplier(lv);
     const adjustedBase = c.baseTime * seedTimeMult;
@@ -399,17 +394,6 @@ function calculate() {
       expPerHour: Math.round(expPerHour)
     });
   });
-
-  // 警告表示（種レベル8のみ）
-  const warningEl = document.getElementById("level8Warning");
-  if (warningEl) {
-    if (usingSeedLevel8) {
-      warningEl.textContent = "※ 種レベル8は効果が未確定のため、レベル7の効果で計算しています。";
-      warningEl.style.display = "block";
-    } else {
-      warningEl.style.display = "none";
-    }
-  }
 
   if (currentSort === "perMin") {
     results.sort((a, b) => b.perMin - a.perMin);
