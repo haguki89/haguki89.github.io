@@ -208,6 +208,13 @@
     const pwOk = document.getElementById('pwOk');
     const pwCancel = document.getElementById('pwCancel');
 
+    const CORRECT_HASH = "07b175cea84d933e863913a37b2df952699c95952dc9509e5678b3ce118547aa";
+
+    async function sha256(str) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
     document.getElementById('secretFooter').addEventListener('click', function () {
       clickCount++;
 
@@ -224,9 +231,10 @@
       }
     });
 
-    pwOk.addEventListener('click', function () {
-      if (pwInput.value === 'guki') {
-        window.location.href = 'admin.html';
+    pwOk.addEventListener('click', async function () {
+      const hash = await sha256(pwInput.value.trim());
+      if (hash === CORRECT_HASH) {
+        window.location.href = '../admin/admin';
       } else {
         alert('パスワードが違います');
         modal.style.display = 'none';

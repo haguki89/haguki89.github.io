@@ -1,0 +1,93 @@
+.tool-container {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.form-area { flex: 0 0 380px; min-width: 280px; }
+.preview-area { flex: 1; min-width: 280px; }
+.form-group { margin: 14px 0; }
+.form-group label {
+  display: inline-block;
+  width: 110px;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  vertical-align: middle;
+}
+input[type="text"],
+input[type="number"] {
+  width: 240px;
+  padding: 8px 10px;
+  background: #07080a;
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+}
+input[type="file"] {
+  margin-left: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.id-prefix {
+  font-size: 14px;
+  color: var(--accent);
+  margin-right: 6px;
+  letter-spacing: 0.04em;
+}
+#numberInput { width: 80px; }
+button {
+  padding: 10px 20px;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  margin: 12px 8px 8px 0;
+  cursor: pointer;
+  background: #101217;
+  border: 1px solid var(--line);
+  color: var(--text);
+  transition: border-color 0.2s, color 0.2s;
+}
+button:hover { border-color: var(--accent); color: var(--accent); }
+#generateBtn { border-color: #4a7c59; color: #7dcea0; }
+#generateBtn:hover { background: #0e1a12; }
+#downloadBtn, #cropDownloadBtn {
+  border-color: #2a5a8a;
+  color: #8ab4d4;
+  display: none;
+}
+#downloadBtn:hover, #cropDownloadBtn:hover { background: #0a1520; }
+canvas {
+  border: 1px solid var(--line);
+  max-width: 100%;
+  height: auto;
+  background: #07080a;
+  display: block;
+}
+.note {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 16px;
+  line-height: 1.7;
+}
+.sub-sec {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.sub-sec h3 {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+@media (max-width: 640px) {
+  .form-area, .preview-area { flex: 1 1 100%; }
+  input[type="text"], input[type="number"] { width: 100%; max-width: 260px; }
+  .form-group label { display: block; width: auto; margin-bottom: 6px; }
+}
+#cropCanvas {
+  max-width: 180px;
+  height: auto;
+}

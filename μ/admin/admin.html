@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-MH324TNG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="../png/favicon.png" type="image/png">
+  <title>管理パネル | μ隔離観察施設</title>
+  <meta name="description" content="μ隔離観察施設 管理パネル">
+
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../index.css">
+  <link rel="stylesheet" href="./admin.css">
+</head>
+
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="https://mfre.jp/μ/#top" class="nav-logo">μ隔離観察施設</a>
+      <button class="nav-toggle" aria-label="メニューを開く">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="https://mfre.jp/μ/#top">HOME</a></li>
+        <li><a href="https://mfre.jp/μ/#briefing">BRIEFING</a></li>
+        <li><a href="https://mfre.jp/μ/cast/cast">CAST</a></li>
+        <li><a href="https://mfre.jp/μ/#voice">VOICE</a></li>
+        <li><a href="https://mfre.jp/μ/access">ACCESS</a></li>
+        <li><a href="./admin.html" class="current">ADMIN</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="wrap" id="top">
+    <header class="hero">
+      <div class="hero-meta">
+        <p class="sub">FACILITY ADMINISTRATION　／　RESTRICTED</p>
+      </div>
+    </header>
+
+    <p class="eye">管理権限が確認されました。<br>操作は記録されます。</p>
+
+    <section id="entry-pass">
+      <div class="sec-id">REPORT-μ-ADMIN-004　／　入館証作成</div>
+
+      <!-- アスペクト比変換ツール -->
+      <div class="sub-sec">
+        <h3>写真アスペクト比変換（3:4）</h3>
+        <p style="font-size:13px; color:var(--muted); margin-bottom:12px;">横幅を固定し、上下を中央から切り取って 3:4 にします。</p>
+        <div class="tool-container">
+          <div class="form-area">
+            <div class="form-group">
+              <label>写真を選択</label>
+              <input type="file" id="cropPhotoFile" accept="image/*">
+            </div>
+            <button id="cropDownloadBtn">PNGをダウンロード</button>
+            <div class="note">
+              元の画像の横幅をそのまま使い、高さだけを 4/3 倍に調整して中央から切り取ります。<br>
+              すでに 3:4 の場合はほぼそのままになります。生成した画像を下の「名札生成」の写真として使用してください。
+            </div>
+          </div>
+          <div class="preview-area">
+            <canvas id="cropCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- 名札生成ツール -->
+      <div class="sub-sec">
+        <h3>名札生成</h3>
+        <div class="tool-container">
+          <div class="form-area">
+            <div class="form-group">
+              <label>テンプレート</label>
+              <input type="file" id="templateFile" accept="image/png">
+            </div>
+            <div class="form-group">
+              <label>写真（3:4）</label>
+              <input type="file" id="photoFile" accept="image/*">
+            </div>
+            <div class="form-group">
+              <label>氏名</label>
+              <input type="text" id="nameInput" placeholder="山田 太郎">
+            </div>
+            <div class="form-group">
+              <label>日付</label>
+              <input type="text" id="dateInput" placeholder="YYYY/MM/DD または YYYY/M/D">
+            </div>
+            <div class="form-group">
+              <label>ID</label>
+              <span class="id-prefix" id="idPrefix">μ-VIS-MMDD</span>
+              <input type="number" id="numberInput" min="1" max="999" placeholder="番号">
+            </div>
+            <button id="generateBtn">生成</button>
+            <button id="downloadBtn">PNGをダウンロード</button>
+          </div>
+          <div class="preview-area">
+            <canvas id="canvas"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer> μ隔離観察施設&copy; ADMINISTRATION </footer>
+  </div>
+
+  <script>
+    // アスペクト比変換ツール
+    const cropCanvas = document.getElementById("cropCanvas");
+    const cropCtx = cropCanvas.getContext("2d");
+    let sourceImg = null;
+
+    document.getElementById("cropPhotoFile").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        sourceImg = new Image();
+        sourceImg.onload = () => {
+          cropTo3x4();
+          document.getElementById("cropDownloadBtn").style.display = "inline-block";
+        };
+        sourceImg.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function cropTo3x4() {
+      if (!sourceImg) return;
+      const srcW = sourceImg.naturalWidth;
+      const srcH = sourceImg.naturalHeight;
+      const targetH = Math.round(srcW * 4 / 3);
+      let sy = 0;
+      let sh = srcH;
+      if (srcH > targetH) {
+        sy = Math.round((srcH - targetH) / 2);
+        sh = targetH;
+      }
+      cropCanvas.width = srcW;
+      cropCanvas.height = targetH;
+      cropCtx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+      cropCtx.drawImage(sourceImg, 0, sy, srcW, sh, 0, 0, srcW, targetH);
+    }
+
+    document.getElementById("cropDownloadBtn").addEventListener("click", () => {
+      if (!sourceImg) return;
+      cropCanvas.toBlob(function(blob) {
+        if (!blob) { alert("画像の生成に失敗しました。"); return; }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "photo_3x4.png";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+      }, "image/png");
+    });
+
+    // 名札生成ツール
+    const PHOTO_X = 166, PHOTO_Y = 700, PHOTO_W = 528, PHOTO_H = 704;
+    const TEXT_X = 740;
+    const TEXT_Y_NAME = 860;
+    const TEXT_Y_ID   = 1020;
+    const TEXT_Y_DATE = 1180;
+    const FONT_SIZE = 65;
+    const FONT_FAMILY = '"Yu Gothic UI", "YuGothic", "Yu Gothic", Meiryo, sans-serif';
+    const TEXT_COLOR = "#B6B5B2";
+
+    const EXPECTED_RATIO = 3 / 4;
+    const RATIO_TOLERANCE = 0.02;
+
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let templateImg = null;
+    let photoImg = null;
+    let currentId = "";
+    let isPhotoValid = false;
+
+    function pad2(n) { return n.toString().padStart(2, "0"); }
+    function pad3(n) { return n.toString().padStart(3, "0"); }
+
+    function validateAndFormatDate(str) {
+      if (!str) return null;
+      const m = str.trim().match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+      if (!m) return null;
+      const y = parseInt(m[1], 10);
+      const mo = parseInt(m[2], 10);
+      const d = parseInt(m[3], 10);
+      if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+      const date = new Date(y, mo - 1, d);
+      if (date.getFullYear() !== y || date.getMonth() + 1 !== mo || date.getDate() !== d) return null;
+      return { formatted: `${y}/${pad2(mo)}/${pad2(d)}`, mmdd: pad2(mo) + pad2(d) };
+    }
+
+    function updateIdDisplay(doFormat = false) {
+      const dateInput = document.getElementById("dateInput");
+      const dateResult = validateAndFormatDate(dateInput.value);
+      const num = parseInt(document.getElementById("numberInput").value, 10);
+      const idPrefix = document.getElementById("idPrefix");
+
+      if (dateResult) {
+        idPrefix.textContent = `μ-VIS-${dateResult.mmdd}`;
+      } else {
+        idPrefix.textContent = "μ-VIS-MMDD";
+      }
+
+      if (dateResult && !isNaN(num) && num >= 1 && num <= 999) {
+        currentId = `μ-VIS-${dateResult.mmdd}${pad3(num)}`;
+        if (doFormat) dateInput.value = dateResult.formatted;
+      } else {
+        currentId = "";
+      }
+    }
+
+    document.getElementById("dateInput").addEventListener("input", () => updateIdDisplay(false));
+    document.getElementById("numberInput").addEventListener("input", () => updateIdDisplay(false));
+    document.getElementById("dateInput").addEventListener("blur", () => updateIdDisplay(true));
+
+    document.getElementById("templateFile").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        templateImg = new Image();
+        templateImg.onload = () => {
+          canvas.width = templateImg.width;
+          canvas.height = templateImg.height;
+          ctx.drawImage(templateImg, 0, 0);
+        };
+        templateImg.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById("photoFile").addEventListener("change", e => {
+      const file = e.target.files[0];
+      isPhotoValid = false;
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        photoImg = new Image();
+        photoImg.onload = () => {
+          const ratio = photoImg.naturalWidth / photoImg.naturalHeight;
+          isPhotoValid = Math.abs(ratio - EXPECTED_RATIO) <= RATIO_TOLERANCE;
+        };
+        photoImg.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById("generateBtn").addEventListener("click", () => {
+      const name = document.getElementById("nameInput").value.trim();
+      const dateStr = document.getElementById("dateInput").value.trim();
+      const dateResult = validateAndFormatDate(dateStr);
+      const num = parseInt(document.getElementById("numberInput").value, 10);
+
+      if (!name) { alert("氏名を入力してください"); return; }
+      if (!dateResult) { alert("正しい日付を入力してください（YYYY/MM/DD）"); return; }
+      if (isNaN(num) || num < 1 || num > 999) { alert("1〜999の番号を入力してください"); return; }
+      if (!templateImg || !templateImg.complete || templateImg.naturalWidth === 0) {
+        alert("テンプレート（format.png）を選択してください。");
+        return;
+      }
+      if (!photoImg || !photoImg.complete) { alert("写真を選択してください"); return; }
+      if (!isPhotoValid) { alert("写真のアスペクト比が3:4ではありません"); return; }
+
+      document.getElementById("dateInput").value = dateResult.formatted;
+      currentId = `μ-VIS-${dateResult.mmdd}${pad3(num)}`;
+      const formattedDate = dateResult.formatted;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(templateImg, 0, 0);
+      ctx.drawImage(photoImg, PHOTO_X, PHOTO_Y, PHOTO_W, PHOTO_H);
+
+      ctx.font = `${FONT_SIZE}px ${FONT_FAMILY}`;
+      ctx.fillStyle = TEXT_COLOR;
+      ctx.textBaseline = "top";
+      ctx.textAlign = "left";
+
+      ctx.fillText(name, TEXT_X, TEXT_Y_NAME);
+      ctx.fillText(currentId, TEXT_X, TEXT_Y_ID);
+      ctx.fillText(formattedDate, TEXT_X, TEXT_Y_DATE);
+
+      document.getElementById("downloadBtn").style.display = "inline-block";
+    });
+
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      const name = document.getElementById("nameInput").value.trim() || "name_tag";
+      const safeName = name.replace(/[\\/:*?"<>|]/g, "_");
+
+      canvas.toBlob(function(blob) {
+        if (!blob) {
+          alert("画像の生成に失敗しました。");
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = safeName + ".png";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+      }, "image/png");
+    });
+
+    // ナビ
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.querySelector('.nav-toggle');
+      const nav = document.querySelector('.nav');
+    
+      if (toggle && nav) {
+        toggle.addEventListener('click', () => {
+          nav.classList.toggle('open');
+        });
+    
+        document.querySelectorAll('.nav-links a').forEach(link => {
+          link.addEventListener('click', () => {
+            nav.classList.remove('open');
+          });
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>
