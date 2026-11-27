@@ -4,7 +4,7 @@ const CROPS = [
   { name: "とうもろこし", unlockLv: 1, baseTime: 45, basePrice: 14, minYield: 3, maxYield: 4, seedCost: 16, type: "畑", harvestExp: 8 },
   { name: "かぼちゃ", unlockLv: 1, baseTime: 120, basePrice: 150, minYield: 1, maxYield: 1, seedCost: 30, type: "畑", harvestExp: 20 },
   { name: "小麦", unlockLv: 2, baseTime: 30, basePrice: 6, minYield: 4, maxYield: 6, seedCost: 8, type: "畑", harvestExp: 5 },
-  { name: "キャベツ", unlockLv: 4, baseTime: 40, basePrice: 40, minYield: 2, maxYield: 2, seedCost: 20, type: "畑", harvestExp: 12 },
+  { name: "キャベツ", unlockLv: 4, baseTime: 60, basePrice: 40, minYield: 2, maxYield: 2, seedCost: 20, type: "畑", harvestExp: 12 },
   { name: "すいか", unlockLv: 6, baseTime: 240, basePrice: 320, minYield: 1, maxYield: 1, seedCost: 72, type: "畑", harvestExp: 40 },
   { name: "レタス", unlockLv: 15, baseTime: 90, basePrice: 55, minYield: 2, maxYield: 3, seedCost: 25, type: "畑", harvestExp: 15 },
   { name: "イネ(お米)", unlockLv: 20, baseTime: 70, basePrice: 100, minYield: 1, maxYield: 2, seedCost: 66, type: "畑", harvestExp: 13 },
